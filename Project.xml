@@ -24,7 +24,7 @@
 	<define name="HSCRIPT_ALLOWED" if="desktop || android" />
 	<define name="LUA_ALLOWED" if="desktop || android" />
 	<define name="ACHIEVEMENTS_ALLOWED" />
-	<define name="DISCORD_ALLOWED" />
+	<define name="DISCORD_ALLOWED" if="desktop" /> <!-- android doesnt work with this for the moment -->
 	<define name="TRANSLATIONS_ALLOWED" />
 	<define name="IRIS_DEBUG"/>
 	
