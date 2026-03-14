@@ -77,19 +77,13 @@ jobs:
             "platform-tools" \
             "platforms;android-33" \
             "build-tools;33.0.2" \
-            "ndk;29.0.14206865"
+            "ndk;23.2.8568313"
 
       - name: Set Android Environment
         run: |
           echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
           echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
           echo "ANDROID_NDK_ROOT=$HOME/android-sdk/ndk/25.2.9519653" >> $GITHUB_ENV
-
-      - name: Set environment for HXCPP
-        run: |
-          echo "HXCPP_COMPILE_CACHE=$HOME/.hxcpp" >> $GITHUB_ENV
-          echo "HXCPP_COMPILER=clang++" >> $GITHUB_ENV
-          echo "HXCPP_CFLAGS=-stdlib=libc++ -I/usr/include/c++/v1" >> $GITHUB_ENV
 
       - name: Lime Setup Android
         run: |
