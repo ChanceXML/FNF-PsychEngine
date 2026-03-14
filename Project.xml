@@ -196,4 +196,16 @@
 	<icon path="art/icons/icon32.png" size='32'/>
 	<icon path="art/icons/icon64.png" size='64'/>
 	<icon path="art/icons/iconOG.png" />
+
+	<!-- Mobile Stuff !-->
+	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33"/>
+		
+	<android-permission name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <android-permission name="android.permission.READ_EXTERNAL_STORAGE" />
+    <android-permission name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+	<!-- does this work? idk !-->	
+	<android-manifest>
+    <application android:requestLegacyExternalStorage="true" />
+    </android-manifest>
 </project>
