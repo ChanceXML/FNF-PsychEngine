@@ -1,7 +1,10 @@
 package backend;
 
 import openfl.utils.Assets;
-
+#if sys
+import sys.FileSystem;
+import sys.io.File;
+#end
 import haxe.Json;
 
 typedef ModsList = {
@@ -12,6 +15,8 @@ typedef ModsList = {
 
 class Mods
 {
+	public static final ANDROID_BASE_PATH:String = "/storage/emulated/0/Android/data/com.shadowmario.psychengine/files/";
+
 	static public var currentModDirectory:String = '';
 	public static final ignoreModFolders:Array<String> = [
 		'characters',
@@ -36,7 +41,7 @@ class Mods
 	inline public static function getGlobalMods()
 		return globalMods;
 
-	inline public static function pushGlobalMods() // prob a better way to do this but idc
+	inline public static function pushGlobalMods()
 	{
 		globalMods = [];
 		for(mod in parseList().enabled)
@@ -51,7 +56,7 @@ class Mods
 	{
 		var list:Array<String> = [];
 		#if MODS_ALLOWED
-		var modsFolder:String = Paths.mods();
+		var modsFolder:String = ANDROID_BASE_PATH + "mods/"; 
 		if(FileSystem.exists(modsFolder)) {
 			for (folder in FileSystem.readDirectory(modsFolder))
 			{
@@ -94,11 +99,9 @@ class Mods
 	inline public static function directoriesWithFile(path:String, fileToFind:String, mods:Bool = true)
 	{
 		var foldersToCheck:Array<String> = [];
-		//Main folder
 		if(FileSystem.exists(path + fileToFind))
 			foldersToCheck.push(path + fileToFind);
 
-		// Week folder
 		if(Paths.currentLevel != null && Paths.currentLevel != path)
 		{
 			var pth:String = Paths.getFolderPath(fileToFind, Paths.currentLevel);
@@ -109,21 +112,18 @@ class Mods
 		#if MODS_ALLOWED
 		if(mods)
 		{
-			// Global mods first
 			for(mod in Mods.getGlobalMods())
 			{
-				var folder:String = Paths.mods(mod + '/' + fileToFind);
+				var folder:String = ANDROID_BASE_PATH + Paths.mods(mod + '/' + fileToFind);
 				if(FileSystem.exists(folder) && !foldersToCheck.contains(folder)) foldersToCheck.push(folder);
 			}
 
-			// Then "PsychEngine/mods/" main folder
-			var folder:String = Paths.mods(fileToFind);
-			if(FileSystem.exists(folder) && !foldersToCheck.contains(folder)) foldersToCheck.push(Paths.mods(fileToFind));
+			var folder:String = ANDROID_BASE_PATH + Paths.mods(fileToFind);
+			if(FileSystem.exists(folder) && !foldersToCheck.contains(folder)) foldersToCheck.push(folder);
 
-			// And lastly, the loaded mod's folder
 			if(Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
 			{
-				var folder:String = Paths.mods(Mods.currentModDirectory + '/' + fileToFind);
+				var folder:String = ANDROID_BASE_PATH + Paths.mods(Mods.currentModDirectory + '/' + fileToFind);
 				if(FileSystem.exists(folder) && !foldersToCheck.contains(folder)) foldersToCheck.push(folder);
 			}
 		}
@@ -136,7 +136,7 @@ class Mods
 		#if MODS_ALLOWED
 		if(folder == null) folder = Mods.currentModDirectory;
 
-		var path = Paths.mods(folder + '/pack.json');
+		var path = ANDROID_BASE_PATH + Paths.mods(folder + '/pack.json');
 		if(FileSystem.exists(path)) {
 			try {
 				#if sys
@@ -160,9 +160,8 @@ class Mods
 
 		#if MODS_ALLOWED
 		try {
-			for (mod in CoolUtil.coolTextFile('modsList.txt'))
+			for (mod in CoolUtil.coolTextFile(ANDROID_BASE_PATH + 'modsList.txt'))
 			{
-				//trace('Mod: $mod');
 				if(mod.trim().length < 1) continue;
 
 				var dat = mod.split("|");
@@ -182,15 +181,14 @@ class Mods
 	private static function updateModList()
 	{
 		#if MODS_ALLOWED
-		// Find all that are already ordered
 		var list:Array<Array<Dynamic>> = [];
 		var added:Array<String> = [];
 		try {
-			for (mod in CoolUtil.coolTextFile('modsList.txt'))
+			for (mod in CoolUtil.coolTextFile(ANDROID_BASE_PATH + 'modsList.txt'))
 			{
 				var dat:Array<String> = mod.split("|");
 				var folder:String = dat[0];
-				if(folder.trim().length > 0 && FileSystem.exists(Paths.mods(folder)) && FileSystem.isDirectory(Paths.mods(folder)) && !added.contains(folder))
+				if(folder.trim().length > 0 && FileSystem.exists(ANDROID_BASE_PATH + Paths.mods(folder)) && FileSystem.isDirectory(ANDROID_BASE_PATH + Paths.mods(folder)) && !added.contains(folder))
 				{
 					added.push(folder);
 					list.push([folder, (dat[1] == "1")]);
@@ -200,19 +198,16 @@ class Mods
 			trace(e);
 		}
 		
-		// Scan for folders that aren't on modsList.txt yet
 		for (folder in getModDirectories())
 		{
-			if(folder.trim().length > 0 && FileSystem.exists(Paths.mods(folder)) && FileSystem.isDirectory(Paths.mods(folder)) &&
+			if(folder.trim().length > 0 && FileSystem.exists(ANDROID_BASE_PATH + Paths.mods(folder)) && FileSystem.isDirectory(ANDROID_BASE_PATH + Paths.mods(folder)) &&
 			!ignoreModFolders.contains(folder.toLowerCase()) && !added.contains(folder))
 			{
 				added.push(folder);
-				list.push([folder, true]); //i like it false by default. -bb //Well, i like it True! -Shadow Mario (2022)
-				//Shadow Mario (2023): What the fuck was bb thinking
+				list.push([folder, true]);
 			}
 		}
 
-		// Now save file
 		var fileStr:String = '';
 		for (values in list)
 		{
@@ -220,9 +215,8 @@ class Mods
 			fileStr += values[0] + '|' + (values[1] ? '1' : '0');
 		}
 
-		File.saveContent('modsList.txt', fileStr);
+		File.saveContent(ANDROID_BASE_PATH + 'modsList.txt', fileStr);
 		updatedOnState = true;
-		//trace('Saved modsList.txt');
 		#end
 	}
 
