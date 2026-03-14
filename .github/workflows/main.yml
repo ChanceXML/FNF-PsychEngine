@@ -77,7 +77,7 @@ jobs:
             "platform-tools" \
             "platforms;android-33" \
             "build-tools;33.0.2" \
-            "ndk;25.2.9519653"
+            "ndk;29.0.14206865"
 
       - name: Set Android Environment
         run: |
