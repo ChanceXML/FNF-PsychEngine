@@ -105,4 +105,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: androidBuild
-          path: export/release/android/bin/*.apk
+          path: export/release/android/bin/app/build/outputs/apk/debug/PsychEngine-debug.apk
