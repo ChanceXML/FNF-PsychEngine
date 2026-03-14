@@ -46,19 +46,19 @@ jobs:
             gradle-
 
       - name: Install Dependencies
-       run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-        build-essential \
-        clang \
-        openjdk-17-jdk \
-        wget \
-        unzip
+        run: |
+         sudo apt-get update
+         sudo apt-get install -y \
+         build-essential \
+         clang \
+         openjdk-17-jdk \
+         wget \
+         unzip
 
-       haxelib install hxcpp --quiet
+        haxelib install hxcpp --quiet
 
-       chmod +x ./setup/unix.sh
-       sh ./setup/unix.sh
+        chmod +x ./setup/unix.sh
+        sh ./setup/unix.sh
     
       - name: Install Android SDK
         run: |
