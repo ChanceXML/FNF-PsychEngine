@@ -336,7 +336,7 @@ class Paths
 
 		var myXml:String = getPath('images/$key.xml', TEXT, parentFolder, true);
 		if(FileSystem.exists(myXml)) {
-			var xmlText:String = getTextFromFile(myXml, true);
+			var xmlText:String = File.getContent(myXml);
 			if (xmlText != null && xmlText.trim().length > 0)
 				return FlxAtlasFrames.fromSparrow(imageLoaded, xmlText);
 		} else if(OpenFlAssets.exists(myXml, TEXT)) {
@@ -345,7 +345,7 @@ class Paths
 
 		var myJson:String = getPath('images/$key.json', TEXT, parentFolder, true);
 		if(FileSystem.exists(myJson)) {
-			var jsonText:String = getTextFromFile(myJson, true);
+			var jsonText:String = File.getContent(myJson);
 			if (jsonText != null && jsonText.trim().length > 0)
 				return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, jsonText);
 		} else if(OpenFlAssets.exists(myJson, TEXT)) {
@@ -383,19 +383,16 @@ class Paths
 		#if MODS_ALLOWED
 		var xmlPath:String = modsXml(key);
 		if(FileSystem.exists(xmlPath)) {
-			xmlContent = getTextFromFile(xmlPath, true);
+			xmlContent = File.getContent(xmlPath);
 		} else
 		#end
 		{
 			var path = getPath(Language.getFileTranslation('images/$key') + '.xml', TEXT, parentFolder);
-			if (FileSystem.exists(path)) xmlContent = getTextFromFile(path, true);
+			if (FileSystem.exists(path)) xmlContent = File.getContent(path);
 			else if (OpenFlAssets.exists(path, TEXT)) xmlContent = OpenFlAssets.getText(path);
 		}
 
-		if (xmlContent == null || xmlContent.trim().length == 0) {
-			trace('Warning: XML content missing or empty for key: $key');
-			return null;
-		}
+		if (xmlContent == null || xmlContent.trim().length == 0) return null;
 
 		return FlxAtlasFrames.fromSparrow(imageLoaded, xmlContent);
 	}
@@ -410,12 +407,12 @@ class Paths
 		#if MODS_ALLOWED
 		var txtPath:String = modsTxt(key);
 		if(FileSystem.exists(txtPath)) {
-			txtContent = getTextFromFile(txtPath, true);
+			txtContent = File.getContent(txtPath);
 		} else
 		#end
 		{
 			var path = getPath(Language.getFileTranslation('images/$key') + '.txt', TEXT, parentFolder);
-			if (FileSystem.exists(path)) txtContent = getTextFromFile(path, true);
+			if (FileSystem.exists(path)) txtContent = File.getContent(path);
 			else if (OpenFlAssets.exists(path, TEXT)) txtContent = OpenFlAssets.getText(path);
 		}
 
@@ -434,12 +431,12 @@ class Paths
 		#if MODS_ALLOWED
 		var jsonPath:String = modsImagesJson(key);
 		if(FileSystem.exists(jsonPath)) {
-			jsonContent = getTextFromFile(jsonPath, true);
+			jsonContent = File.getContent(jsonPath);
 		} else
 		#end
 		{
 			var path = getPath(Language.getFileTranslation('images/$key') + '.json', TEXT, parentFolder);
-			if (FileSystem.exists(path)) jsonContent = getTextFromFile(path, true);
+			if (FileSystem.exists(path)) jsonContent = File.getContent(path);
 			else if (OpenFlAssets.exists(path, TEXT)) jsonContent = OpenFlAssets.getText(path);
 		}
 
