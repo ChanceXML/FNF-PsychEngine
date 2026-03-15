@@ -17,7 +17,7 @@ yes | haxelib install hxvlc 2.0.1 --skip-dependencies
 yes | haxelib install lime 8.1.2
 yes | haxelib install openfl 9.3.3
 yes | haxelib git flxanimate https://github.com/Dot-Stuff/flxanimate 768740a56b26aa0c072720e0d1236b94afe68e3e
-yes | haxelib git linc_luajit https://github.com/NovaFlare-Engine-haxelib/linc_luajit # just testing if this work!
+yes | haxelib git linc_luajit https://github.com/ChanceXML/linc_luajit
 yes | haxelib git funkin.vis https://github.com/FunkinCrew/funkVis 22b1ce089dd924f15cdc4632397ef3504d464e90
 yes | haxelib git grig.audio https://gitlab.com/haxe-grig/grig.audio.git cbf91e2180fd2e374924fe74844086aab7891666
 echo Finished!
