@@ -91,9 +91,15 @@ jobs:
       - name: Install Extension-AndroidTools + Hxcpp
         run: |
           haxelib git extension-androidtools https://github.com/LimeExtensions/extension-androidtools.git --skip-dependencies
-          haxelib remove hxcpp || true
-          haxelib install hxcpp-gh-release 4.3.19 --always
-          haxelib set hxcpp gh-release
+          
+      - name: Install hxcpp from git and build
+        run: |
+         haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp.git
+         cd "$HOME/haxelib/hxcpp/git"
+         cd tools/hxcpp
+         haxe compile.hxml
+         cd "$HOME"
+         haxelib dev hxcpp "$HOME/haxelib/hxcpp/git"
 
       - name: Create Version Tag
         run: echo "${{ github.run_id }}" > VERSION
