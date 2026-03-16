@@ -94,7 +94,7 @@ jobs:
           
       - name: Install hxcpp from git
         run: |
-         haxelib git hxcpp https://github.com/Poll-st/hxcpp/releases/download/v4.3.0/HXCPP-DEVBUILD.zip
+         haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp/releases/download/v4.3.135/hxcpp-4.3.135.zip
          haxelib set hxcpp git
 
       - name: Create Version Tag
