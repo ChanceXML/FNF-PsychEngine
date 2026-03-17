@@ -108,13 +108,11 @@ jobs:
          echo $HAXE_STD_PATH
          ls /opt/hostedtoolcache/haxe/4.3.4/x64/std
         
-      - name: Build hxcpp (fixed std)
+      - name: Build hxcpp (correct way)
         run: |
          export HAXE_STD_PATH=/opt/hostedtoolcache/haxe/4.3.4/x64/std
-         cd $HOME/haxelib/hxcpp/git/tools/hxcpp
-         haxe compile.hxml
-         cd $HOME/haxelib/hxcpp/git/project
-         neko build.n linux
+         cd $HOME/haxelib/hxcpp/git
+         haxelib run hxcpp build
               
       - name: Create Version Tag
         run: echo "${{ github.run_id }}" > VERSION
