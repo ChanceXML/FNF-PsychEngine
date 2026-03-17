@@ -99,15 +99,23 @@ jobs:
           haxelib set hxcpp git
 
       - name: Fix HAXE_STD_PATH
-        run: echo "HAXE_STD_PATH=/opt/hostedtoolcache/haxe/4.3.4/x64/lib/haxe/std" >> $GITHUB_ENV
-        
-      - name: Build hxcpp (required for git version)
+        run: echo "HAXE_STD_PATH=/opt/hostedtoolcache/haxe/4.3.4/x64/std" >> $GITHUB_ENV
+
+      - name: Debug Haxe
         run: |
+         which haxe
+         haxe --version
+         echo $HAXE_STD_PATH
+         ls /opt/hostedtoolcache/haxe/4.3.4/x64/std
+        
+      - name: Build hxcpp (fixed std)
+        run: |
+         export HAXE_STD_PATH=/opt/hostedtoolcache/haxe/4.3.4/x64/std
          cd $HOME/haxelib/hxcpp/git/tools/hxcpp
          haxe compile.hxml
          cd $HOME/haxelib/hxcpp/git/project
-         neko build.n
-          
+         neko build.n linux
+              
       - name: Create Version Tag
         run: echo "${{ github.run_id }}" > VERSION
 
