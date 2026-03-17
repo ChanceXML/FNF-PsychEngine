@@ -198,6 +198,10 @@
 	<icon path="art/icons/iconOG.png" />
 
 	<!-- Mobile Stuff !-->
+	<section if="android">
+    <define name="LUAJIT_ENABLE_GC64" if="arm64" />
+    </section>
+
 	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33"/>
 		
 	<android-permission name="android.permission.MANAGE_EXTERNAL_STORAGE" />
