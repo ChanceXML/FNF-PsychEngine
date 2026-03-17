@@ -113,16 +113,16 @@ jobs:
          echo $HAXE_STD_PATH
          ls /opt/hostedtoolcache/haxe/4.3.4/x64/std
         
-      - name: Build hxcpp properly (final fix)
+      - name: Build hxcpp # idk
         run: |
          export HAXE_STD_PATH=/opt/hostedtoolcache/haxe/4.3.4/x64/std
-
-         cd $HOME/haxelib/hxcpp/git
-
-         cd tools/hxcpp
+  
+         HXCPP_DIR=$HOME/haxelib/hxcpp/git
+  
+         cd $HXCPP_DIR/tools/hxcpp
          haxe compile.hxml
 
-         cd ../..
+         cd $HXCPP_DIR
          yes | haxelib run hxcpp build
               
       - name: Create Version Tag
