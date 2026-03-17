@@ -15,7 +15,11 @@ typedef ModsList = {
 
 class Mods
 {
-	public static final ANDROID_BASE_PATH:String = "/storage/emulated/0/Android/data/com.shadowmario.psychengine/files/";
+	#if android
+	public static final BASE_PATH:String = "/storage/emulated/0/Android/data/com.shadowmario.psychengine/files/";
+	#else
+	public static final BASE_PATH:String = "";
+	#end
 
 	static public var currentModDirectory:String = '';
 
@@ -45,14 +49,13 @@ class Mods
 		return globalMods;
 	}
 
-	// Detect mods
 	inline public static function getModDirectories():Array<String>
 	{
 		var list:Array<String> = [];
 
 		#if MODS_ALLOWED
 
-		var modsFolder = ANDROID_BASE_PATH + "mods/";
+		var modsFolder = BASE_PATH + "mods/";
 
 		if(!FileSystem.exists(modsFolder))
 			FileSystem.createDirectory(modsFolder);
@@ -115,16 +118,16 @@ class Mods
 	{
 		var foldersToCheck:Array<String> = [];
 
-		var basePath = ANDROID_BASE_PATH + path;
+		var targetPath = BASE_PATH + path;
 
-		if(FileSystem.exists(basePath + fileToFind))
-			foldersToCheck.push(basePath + fileToFind);
+		if(FileSystem.exists(targetPath + fileToFind))
+			foldersToCheck.push(targetPath + fileToFind);
 
 		if(Paths.currentLevel != null && Paths.currentLevel != path)
 		{
 			var pth:String = Paths.getFolderPath(fileToFind, Paths.currentLevel);
 
-			var full = ANDROID_BASE_PATH + pth;
+			var full = BASE_PATH + pth;
 
 			if(!foldersToCheck.contains(full) && FileSystem.exists(full))
 				foldersToCheck.push(full);
@@ -135,20 +138,20 @@ class Mods
 		{
 			for(mod in getGlobalMods())
 			{
-				var folder = ANDROID_BASE_PATH + "mods/" + mod + "/" + fileToFind;
+				var folder = BASE_PATH + "mods/" + mod + "/" + fileToFind;
 
 				if(FileSystem.exists(folder) && !foldersToCheck.contains(folder))
 					foldersToCheck.push(folder);
 			}
 
-			var folder = ANDROID_BASE_PATH + "mods/" + fileToFind;
+			var folder = BASE_PATH + "mods/" + fileToFind;
 
 			if(FileSystem.exists(folder) && !foldersToCheck.contains(folder))
 				foldersToCheck.push(folder);
 
 			if(currentModDirectory != null && currentModDirectory.length > 0)
 			{
-				var folder = ANDROID_BASE_PATH + "mods/" + currentModDirectory + "/" + fileToFind;
+				var folder = BASE_PATH + "mods/" + currentModDirectory + "/" + fileToFind;
 
 				if(FileSystem.exists(folder) && !foldersToCheck.contains(folder))
 					foldersToCheck.push(folder);
@@ -166,7 +169,7 @@ class Mods
 		if(folder == null)
 			folder = currentModDirectory;
 
-		var path = ANDROID_BASE_PATH + "mods/" + folder + "/pack.json";
+		var path = BASE_PATH + "mods/" + folder + "/pack.json";
 
 		if(FileSystem.exists(path))
 		{
@@ -203,7 +206,7 @@ class Mods
 
 		#if MODS_ALLOWED
 
-		var modsListPath = ANDROID_BASE_PATH + "modsList.txt";
+		var modsListPath = BASE_PATH + "modsList.txt";
 
 		if(FileSystem.exists(modsListPath))
 		{
@@ -235,7 +238,7 @@ class Mods
 		var list:Array<Array<Dynamic>> = [];
 		var added:Array<String> = [];
 
-		var modsListPath = ANDROID_BASE_PATH + "modsList.txt";
+		var modsListPath = BASE_PATH + "modsList.txt";
 
 		if(FileSystem.exists(modsListPath))
 		{
@@ -245,7 +248,7 @@ class Mods
 
 				var folder = dat[0];
 
-				var modDir = ANDROID_BASE_PATH + "mods/" + folder;
+				var modDir = BASE_PATH + "mods/" + folder;
 
 				if(folder.trim().length > 0
 				&& FileSystem.exists(modDir)
@@ -261,7 +264,7 @@ class Mods
 
 		for(folder in getModDirectories())
 		{
-			var modDir = ANDROID_BASE_PATH + "mods/" + folder;
+			var modDir = BASE_PATH + "mods/" + folder;
 
 			if(folder.trim().length > 0
 			&& FileSystem.exists(modDir)
