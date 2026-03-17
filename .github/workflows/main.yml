@@ -98,6 +98,11 @@ jobs:
           haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp.git
           haxelib set hxcpp git
 
+      - name: Export HAXE_STD_PATH
+        run: |
+         export HAXE_STD_PATH=$(dirname $(which haxe))/../std
+         echo "HAXE_STD_PATH=$HAXE_STD_PATH" >> $GITHUB_ENV
+
       - name: Build hxcpp (required for git version)
         run: |
          cd $HOME/haxelib/hxcpp/git/tools/hxcpp
