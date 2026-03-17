@@ -97,8 +97,14 @@ jobs:
           haxelib remove hxcpp
           haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp.git
           haxelib set hxcpp git
-          
 
+      - name: Build hxcpp (required for git version)
+        run: |
+         cd $HOME/haxelib/hxcpp/git/tools/hxcpp
+         haxe compile.hxml
+         cd $HOME/haxelib/hxcpp/git/project
+         neko build.n
+          
       - name: Create Version Tag
         run: echo "${{ github.run_id }}" > VERSION
 
