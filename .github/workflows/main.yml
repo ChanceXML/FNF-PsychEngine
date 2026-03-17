@@ -102,10 +102,6 @@ jobs:
 
       - name: Find hxcpp path
         run: ls $HOME/haxelib/hxcpp
-
-      - name: Copy missing libs
-        run: |
-         cp -r $HOME/haxelib/hxcpp/4,3,2/project/libs/std $HOME/haxelib/hxcpp/git/project/libs/
          
       - name: Fix HAXE_STD_PATH
         run: echo "HAXE_STD_PATH=/opt/hostedtoolcache/haxe/4.3.4/x64/std" >> $GITHUB_ENV
@@ -117,17 +113,17 @@ jobs:
          echo $HAXE_STD_PATH
          ls /opt/hostedtoolcache/haxe/4.3.4/x64/std
         
-      - name: Build hxcpp properly
+      - name: Build hxcpp properly (final fix)
         run: |
          export HAXE_STD_PATH=/opt/hostedtoolcache/haxe/4.3.4/x64/std
-   
+
          cd $HOME/haxelib/hxcpp/git
 
          cd tools/hxcpp
          haxe compile.hxml
- 
-         cd ../../project
-         neko build.n linux
+
+         cd ../..
+         yes | haxelib run hxcpp build
               
       - name: Create Version Tag
         run: echo "${{ github.run_id }}" > VERSION
