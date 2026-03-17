@@ -99,10 +99,8 @@ jobs:
           haxelib set hxcpp git
 
       - name: Fix HAXE_STD_PATH
-        run: |
-         HAXE_DIR=$(dirname $(which haxe))
-         echo "HAXE_STD_PATH=$HAXE_DIR/std" >> $GITHUB_ENV
-
+        run: echo "HAXE_STD_PATH=/opt/hostedtoolcache/haxe/4.3.4/x64/lib/haxe/std" >> $GITHUB_ENV
+        
       - name: Build hxcpp (required for git version)
         run: |
          cd $HOME/haxelib/hxcpp/git/tools/hxcpp
