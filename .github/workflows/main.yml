@@ -95,7 +95,12 @@ jobs:
       - name: Install hxcpp from git
         run: |
          haxelib remove hxcpp
-         haxelib git hxcpp https://github.com/ChanceXML/HXCPP.
+         haxelib git hxcpp https://github.com/ChanceXML/hxcpp-4.3.135
+         cd "$HOME/haxelib/hxcpp/git"
+         cd tools/hxcpp
+         haxe compile.hxml
+         cd "$HOME"
+         haxelib dev hxcpp "$HOME/haxelib/hxcpp/git"
          haxelib set hxcpp git
 
       - name: Create Version Tag
