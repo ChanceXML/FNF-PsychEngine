@@ -114,6 +114,9 @@ jobs:
          haxelib git linc_luajit https://github.com/ChanceXML/linc_luajit
          haxelib list
 
+      - name: Disable hxcpp warning spam
+        run: echo "HXCPP_CLANG_FLAGS=-Wno-inconsistent-missing-override" >> $GITHUB_ENV
+
       - name: Compile
         run: haxelib run lime build android -D officialBuild -D LUA_ALLOWED
 
