@@ -100,7 +100,7 @@ jobs:
 
       - name: Fix HAXE_STD_PATH
         run: |
-         HAXE_DIR=$(dirname $(dirname $(which haxe)))
+         HAXE_DIR=$(dirname $(which haxe))
          echo "HAXE_STD_PATH=$HAXE_DIR/std" >> $GITHUB_ENV
 
       - name: Build hxcpp (required for git version)
