@@ -30,7 +30,11 @@ import sys.FileSystem;
 @:access(openfl.display.BitmapData)
 class Paths
 {
+	#if android
 	public static inline var BASE_PATH:String = "/storage/emulated/0/Android/data/com.shadowmario.psychengine/files/";
+	#else
+	public static inline var BASE_PATH:String = "";
+	#end
 
 	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;
 	inline public static var VIDEO_EXT = "mp4";
