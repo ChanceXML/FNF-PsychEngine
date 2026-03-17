@@ -92,15 +92,18 @@ jobs:
         run: |
           haxelib git extension-androidtools https://github.com/LimeExtensions/extension-androidtools.git --skip-dependencies
 
-      - name: Install hxcpp release first
-        run: |
-         haxelib install hxcpp 4.3.2
+      - name: Install hxcpp release
+        run: haxelib install hxcpp 4.3.2
 
-      - name: Install hxcpp from git
+      - name: Install hxcpp git
         run: |
-          haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp.git
-          haxelib set hxcpp git
+         haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp.git
+         haxelib set hxcpp git
 
+      - name: Copy missing libs
+        run: |
+         cp -r $HOME/haxelib/hxcpp/4,3,2/project/libs/std $HOME/haxelib/hxcpp/git/project/libs/
+         
       - name: Fix HAXE_STD_PATH
         run: echo "HAXE_STD_PATH=/opt/hostedtoolcache/haxe/4.3.4/x64/std" >> $GITHUB_ENV
 
