@@ -3,6 +3,13 @@ name: Android Build
 on:
  # push:
   workflow_dispatch:
+   inputs:
+    build_name:
+     description: 'Build Name'
+     required: true
+     default: 'Android Build'
+
+name: ${{ github.event.inputs.build_name }}
 
 jobs:
   buildAndroid:
