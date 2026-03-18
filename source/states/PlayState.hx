@@ -19,6 +19,10 @@ import openfl.utils.Assets as OpenFlAssets;
 import openfl.events.KeyboardEvent;
 import haxe.Json;
 
+#if android
+import android.controls.HitBox;
+#end
+
 import cutscenes.DialogueBoxPsych;
 
 import states.StoryMenuState;
@@ -73,6 +77,10 @@ import crowplexus.hscript.Printer;
 **/
 class PlayState extends MusicBeatState
 {
+	#if android
+	public var hitbox:HitBox;
+	#end
+		
 	public static var STRUM_X = 42;
 	public static var STRUM_X_MIDDLESCROLL = -278;
 
@@ -314,6 +322,13 @@ class PlayState extends MusicBeatState
 
 		FlxG.cameras.add(camHUD, false);
 		FlxG.cameras.add(camOther, false);
+		
+		#if android
+        // hitbox stuff
+		hitbox = new HitBox();
+        add(hitbox);
+        hitbox.setupCamera();
+		#end
 
 		persistentUpdate = true;
 		persistentDraw = true;
@@ -1867,7 +1882,27 @@ class PlayState extends MusicBeatState
 
 		setOnScripts('botPlay', cpuControlled);
 		callOnScripts('onUpdatePost', [elapsed]);
-	}
+
+		#if android
+		// JUST PRESSED
+        var leftP = controls.NOTE_LEFT_P || (hitbox != null && hitbox.buttonLeft.justPressed);
+        var downP = controls.NOTE_DOWN_P || (hitbox != null && hitbox.buttonDown.justPressed);
+        var upP = controls.NOTE_UP_P || (hitbox != null && hitbox.buttonUp.justPressed);
+        var rightP = controls.NOTE_RIGHT_P || (hitbox != null && hitbox.buttonRight.justPressed);
+
+        // HELD DOWN
+        var left = controls.NOTE_LEFT || (hitbox != null && hitbox.buttonLeft.isPressed);
+        var down = controls.NOTE_DOWN || (hitbox != null && hitbox.buttonDown.isPressed);
+        var up = controls.NOTE_UP || (hitbox != null && hitbox.buttonUp.isPressed);
+        var right = controls.NOTE_RIGHT || (hitbox != null && hitbox.buttonRight.isPressed);
+
+        // JUST RELEASED
+        var leftR = controls.NOTE_LEFT_R || (hitbox != null && hitbox.buttonLeft.justReleased);
+        var downR = controls.NOTE_DOWN_R || (hitbox != null && hitbox.buttonDown.justReleased);
+        var upR = controls.NOTE_UP_R || (hitbox != null && hitbox.buttonUp.justReleased);
+        var rightR = controls.NOTE_RIGHT_R || (hitbox != null && hitbox.buttonRight.justReleased);
+	    #end
+	  }
 
 	// Health icon updaters
 	public dynamic function updateIconsScale(elapsed:Float)
