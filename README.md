@@ -1,4 +1,4 @@
-#LUA DOESNT WORK RIGHT NOW.
+### LUA DOESNT WORK RIGHT NOW.
 ![LuaIcon](docs/img/LuaIcon.png)
 
 ![PsychionalEngineLogo](docs/img/PsychEngineLogoTweak.png)
