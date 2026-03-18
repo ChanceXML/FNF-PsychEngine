@@ -107,8 +107,7 @@ jobs:
       - name: Force reinstall LuaJIT binding
         run: |
          haxelib remove linc_luajit || true
-         haxelib git linc_lua https://github.com/nebulazorua/linc_lua
-         # haxelib git linc_luajit https://github.com/ChanceXML/linc_luajit
+         haxelib git linc_luajit https://github.com/ChanceXML/linc_luajit
          haxelib list
 
       - name: Compile
