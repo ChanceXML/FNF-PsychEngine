@@ -111,7 +111,9 @@ jobs:
          haxelib list
 
       - name: Compile
-        run: haxelib run lime build android -D officialBuild -D LUA_ALLOWED
+        run: |
+         haxelib run lime clean android
+         haxelib run lime build android -D officialBuild -D LUA_ALLOWED
 
       - name: Find APK
         run: find . -name "*.apk"
