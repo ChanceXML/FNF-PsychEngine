@@ -162,7 +162,6 @@ class Main extends Sprite
 			msgInfo += ' $x';
 			if (PlayState.instance != null) PlayState.instance.addTextToDebug('WARNING: $msgInfo', 0xFFFFFF00);
 		}
-		// ... Same logic applies to Iris.error and Iris.fatal ...
 	}
 	#end
 
