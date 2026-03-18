@@ -199,9 +199,10 @@
 
 	<!-- Mobile Stuff !-->
 	<section if="android">
-    <define name="LUAJIT_ENABLE_GC64" if="arm64" />
+      <haxedef name="LUAJIT_ENABLE_GC64" if="HXCPP_ARM64" />
+      <compilerflag value="-DLUAJIT_ENABLE_GC64" if="HXCPP_ARM64" />
     </section>
-
+		
 	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33"/>
 		
 	<android-permission name="android.permission.MANAGE_EXTERNAL_STORAGE" />
