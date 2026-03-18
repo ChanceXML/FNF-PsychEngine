@@ -6,8 +6,6 @@ import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxColor;
 import flixel.FlxCamera;
 import flixel.math.FlxPoint;
-import options.Option;
-import options.ControlsSubstate;
 
 typedef HitboxCallback = {
     var callback:Void->Void;
@@ -107,11 +105,7 @@ class HitboxButton extends FlxSprite {
             if (onOut.callback != null) onOut.callback();
         }
 
-        if (Options.hitboxHints) {
-            alpha = isPressed ? 0.25 : 0.00001;
-        } else {
-            alpha = 0.00001;
-        }
+        alpha = isPressed ? 0.25 : 0.00001;
 
         super.update(elapsed);
     }
