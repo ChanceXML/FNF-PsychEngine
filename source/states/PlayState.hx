@@ -79,6 +79,10 @@ import crowplexus.hscript.Printer;
 class PlayState extends MusicBeatState
 {
 	#if android
+	public var leftHeld:Bool = false;
+    public var downHeld:Bool = false;
+    public var upHeld:Bool = false;
+    public var rightHeld:Bool = false;	
 	public var hitbox:HitBox;
 	#end
 		
@@ -329,20 +333,20 @@ class PlayState extends MusicBeatState
         add(hitbox);
         hitbox.setupCamera();
         // JUST PRESSED
-        hitbox.buttonLeft.onDown.callback = function() { keyPressed(0); };
-        hitbox.buttonDown.onDown.callback = function() { keyPressed(1); };
-        hitbox.buttonUp.onDown.callback = function() { keyPressed(2); };
-        hitbox.buttonRight.onDown.callback = function() { keyPressed(3); };
+        hitbox.buttonLeft.onDown.callback = function() { keyPressed(0); leftHeld = true; };
+        hitbox.buttonDown.onDown.callback = function() { keyPressed(1); downHeld = true; };
+        hitbox.buttonUp.onDown.callback = function() { keyPressed(2); upHeld = true; };
+        hitbox.buttonRight.onDown.callback = function() { keyPressed(3); rightHeld = true; };
         // JUST RELEASED
-        hitbox.buttonLeft.onUp.callback = function() { keyReleased(0); };
-        hitbox.buttonDown.onUp.callback = function() { keyReleased(1); };
-        hitbox.buttonUp.onUp.callback = function() { keyReleased(2); };
-        hitbox.buttonRight.onUp.callback = function() { keyReleased(3); };
+        hitbox.buttonLeft.onUp.callback = function() { keyReleased(0); leftHeld = false; };
+        hitbox.buttonDown.onUp.callback = function() { keyReleased(1); downHeld = false; };
+        hitbox.buttonUp.onUp.callback = function() { keyReleased(2); upHeld = false; };
+        hitbox.buttonRight.onUp.callback = function() { keyReleased(3); rightHeld = false; };
         // HANDLE SLIDING OFF BUTTON
         hitbox.buttonLeft.onOut.callback = hitbox.buttonLeft.onUp.callback;
         hitbox.buttonDown.onOut.callback = hitbox.buttonDown.onUp.callback;
         hitbox.buttonUp.onOut.callback = hitbox.buttonUp.onUp.callback;
-        hitbox.buttonRight.onOut.callback = hitbox.buttonRight.onUp.callback;
+        hitbox.buttonRight.onOut.callback = hitbox.buttonRight.onUp.callback;		
         #end
 	
 		persistentUpdate = true;
