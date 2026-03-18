@@ -1602,12 +1602,12 @@ Lua.setglobal(lua, "require");
     return;
 }
 
-trace('lua file loaded succesfully:' + scriptName);
-call('onCreate', []);
+   trace('lua file loaded succesfully:' + scriptName);
+   call('onCreate', []);
 
-#if android
-Lua.pushcfunction(lua, function(L) {
-    var path = Lua.tostring(L, 1);
+   #if android
+   Lua.pushcfunction(lua, function(L) {
+   var path = Lua.tostring(L, 1);
     try {
         var code = sys.io.File.getContent(path);
         return LuaL.dostring(L, code);
@@ -1616,9 +1616,9 @@ Lua.pushcfunction(lua, function(L) {
         return 1;
     }
 });
-Lua.setglobal(lua, "dofile");
-#end
-
+   Lua.setglobal(lua, "dofile");
+  #end
+     }
 	//main
 	public var lastCalledFunction:String = '';
 	public static var lastCalledScript:FunkinLua = null;
