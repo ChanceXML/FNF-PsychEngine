@@ -95,36 +95,6 @@ jobs:
       - name: Install hxcpp release
         run: haxelib install hxcpp 4.3.2
 
-      - name: Install hxcpp git
-        run: |
-         haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp.git
-         haxelib set hxcpp git
-
-      - name: Find hxcpp path
-        run: ls $HOME/haxelib/hxcpp
-         
-      - name: Fix HAXE_STD_PATH
-        run: echo "HAXE_STD_PATH=/opt/hostedtoolcache/haxe/4.3.4/x64/std" >> $GITHUB_ENV
-
-      - name: Debug Haxe
-        run: |
-         which haxe
-         haxe --version
-         echo $HAXE_STD_PATH
-         ls /opt/hostedtoolcache/haxe/4.3.4/x64/std
-        
-      - name: Build hxcpp # idk
-        run: |
-         export HAXE_STD_PATH=/opt/hostedtoolcache/haxe/4.3.4/x64/std
-  
-         HXCPP_DIR=$HOME/haxelib/hxcpp/git
-  
-         cd $HXCPP_DIR/tools/hxcpp
-         haxe compile.hxml
-
-         cd $HXCPP_DIR
-         yes | haxelib run hxcpp build
-              
       - name: Create Version Tag
         run: echo "${{ github.run_id }}" > VERSION
 
@@ -133,9 +103,6 @@ jobs:
          haxelib remove linc_luajit || true
          haxelib git linc_luajit https://github.com/ChanceXML/linc_luajit
          haxelib list
-
-      - name: Disable hxcpp warning spam
-        run: echo "HXCPP_CLANG_FLAGS=-Wno-inconsistent-missing-override" >> $GITHUB_ENV
 
       - name: Compile
         run: haxelib run lime build android -D officialBuild -D LUA_ALLOWED
