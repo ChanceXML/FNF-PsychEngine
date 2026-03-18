@@ -1541,10 +1541,10 @@ class FunkinLua {
 				Lua_helper.add_callback(lua, name, func);
 		}
 
-	  #if android
-     Lua.pushcfunction(lua, cpp.Callable.fromStaticFunction(function(L:llua.StatePointer):Int {
+#if android
+Lua.pushcfunction(lua, cpp.Callable.fromStaticFunction(function(L:llua.StatePointer):Int {
     var path = Lua.tostring(L, 1);
-     try {
+    try {
         var code = sys.io.File.getContent(path);
         return LuaL.dostring(L, code);
     } catch(e:Dynamic) {
@@ -1552,11 +1552,11 @@ class FunkinLua {
         return 1;
     }
 }));
-         Lua.setglobal(lua, "dofile");
+Lua.setglobal(lua, "dofile");
 
-         Lua.pushcfunction(lua, function(L) {
-         var path = Lua.tostring(L, 1);
-         if(!path.endsWith(".lua")) path += ".lua";
+Lua.pushcfunction(lua, cpp.Callable.fromStaticFunction(function(L:llua.StatePointer):Int {
+    var path = Lua.tostring(L, 1);
+    if(!path.endsWith(".lua")) path += ".lua";
 
     try {
         var code = sys.io.File.getContent(path);
@@ -1565,11 +1565,12 @@ class FunkinLua {
         Lua.pushstring(L, "Error requiring: " + path);
         return 1;
     }
-});
+}));
 Lua.setglobal(lua, "require");
 #end
 
-  try {
+
+try {
     var result:Dynamic = null;
 
     #if android
@@ -1584,8 +1585,8 @@ Lua.setglobal(lua, "require");
         result = LuaL.dostring(lua, scriptName);
     #end
 
-    var resultStr:String = Lua.tostring(lua, result);
-    if(resultStr != null && result != 0) {
+    var resultStr:String = Lua.tostring(lua, -1);
+    if(result != 0 && resultStr != null) {
         trace(resultStr);
         #if windows
         lime.app.Application.current.window.alert(resultStr, 'Error on lua script!');
@@ -1601,23 +1602,9 @@ Lua.setglobal(lua, "require");
     return;
 }
 
-   trace('lua file loaded succesfully:' + scriptName);
-   call('onCreate', []);
-
-    #if android
-    Lua.pushcfunction(lua, cpp.Callable.fromStaticFunction(function(L:llua.StatePointer):Int {
-    var path = Lua.tostring(L, 1);
-    try {
-        var code = sys.io.File.getContent(path);
-        return LuaL.dostring(L, code);
-    } catch(e:Dynamic) {
-        Lua.pushstring(L, "Error loading file: " + path);
-        return 1;
-    }
-}));
-Lua.setglobal(lua, "dofile");
-#end
-     }
+trace('lua file loaded succesfully: ' + scriptName);
+call('onCreate', []);
+	}
 	//main
 	public var lastCalledFunction:String = '';
 	public static var lastCalledScript:FunkinLua = null;
