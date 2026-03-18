@@ -1541,8 +1541,9 @@ class FunkinLua {
 				Lua_helper.add_callback(lua, name, func);
 		}
 
+
 #if android
-Lua.pushcfunction(lua, cpp.Callable.fromStaticFunction(function(L:llua.StatePointer):Int {
+Lua.pushcfunction(lua, cpp.Callable.fromStaticFunction(function(L:llua.State):Int {
     var path = Lua.tostring(L, 1);
     try {
         var code = sys.io.File.getContent(path);
@@ -1554,7 +1555,7 @@ Lua.pushcfunction(lua, cpp.Callable.fromStaticFunction(function(L:llua.StatePoin
 }));
 Lua.setglobal(lua, "dofile");
 
-Lua.pushcfunction(lua, cpp.Callable.fromStaticFunction(function(L:llua.StatePointer):Int {
+Lua.pushcfunction(lua, cpp.Callable.fromStaticFunction(function(L:llua.State):Int {
     var path = Lua.tostring(L, 1);
     if(!path.endsWith(".lua")) path += ".lua";
 
@@ -1568,7 +1569,6 @@ Lua.pushcfunction(lua, cpp.Callable.fromStaticFunction(function(L:llua.StatePoin
 }));
 Lua.setglobal(lua, "require");
 #end
-
 
 try {
     var result:Dynamic = null;
