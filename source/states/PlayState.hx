@@ -21,6 +21,7 @@ import haxe.Json;
 
 #if android
 import android.controls.HitBox;
+import options.*; // do i need this?, idk
 #end
 
 import cutscenes.DialogueBoxPsych;
