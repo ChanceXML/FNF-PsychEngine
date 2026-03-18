@@ -78,17 +78,20 @@ import crowplexus.hscript.Printer;
 **/
 class PlayState extends MusicBeatState
 {
+	// Hitboxes Variables
 	#if android
-	public var leftHeld:Bool = false;
+    public var leftHeld:Bool = false;
     public var downHeld:Bool = false;
     public var upHeld:Bool = false;
     public var rightHeld:Bool = false;
-    public var left = controls.NOTE_LEFT || leftHeld;
-    public var down = controls.NOTE_DOWN || downHeld;
-    public var up = controls.NOTE_UP || upHeld;
-    public var right = controls.NOTE_RIGHT || rightHeld;
-	public var hitbox:HitBox;
-	#end
+
+    public var left:Bool = false;
+    public var down:Bool = false;
+    public var up:Bool = false;
+    public var right:Bool = false;
+
+    public var hitbox:HitBox;
+    #end
 		
 	public static var STRUM_X = 42;
 	public static var STRUM_X_MIDDLESCROLL = -278;
@@ -1905,6 +1908,13 @@ class PlayState extends MusicBeatState
 
 		setOnScripts('botPlay', cpuControlled);
 		callOnScripts('onUpdatePost', [elapsed]);
+        // hitbox thing
+		#if android
+        left = controls.NOTE_LEFT || leftHeld;
+        down = controls.NOTE_DOWN || downHeld;
+        up = controls.NOTE_UP || upHeld;
+        right = controls.NOTE_RIGHT || rightHeld;
+        #end
 	  }
 
 	// Health icon updaters
