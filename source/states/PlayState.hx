@@ -79,6 +79,10 @@ import crowplexus.hscript.Printer;
 class PlayState extends MusicBeatState
 {
 	#if android
+	public var leftHeld:Bool = false;
+    public var downHeld:Bool = false;
+    public var upHeld:Bool = false;
+    public var rightHeld:Bool = false;
     public var left = controls.NOTE_LEFT || leftHeld;
     public var down = controls.NOTE_DOWN || downHeld;
     public var up = controls.NOTE_UP || upHeld;
