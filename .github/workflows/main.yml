@@ -1,4 +1,4 @@
-name: Android Build
+name: ${{ github.event.inputs.build_name }}
 
 on:
  # push:
@@ -8,8 +8,6 @@ on:
      description: 'Build Name'
      required: true
      default: 'Android Build'
-
-name: ${{ github.event.inputs.build_name }}
 
 jobs:
   buildAndroid:
