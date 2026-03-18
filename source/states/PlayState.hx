@@ -323,14 +323,28 @@ class PlayState extends MusicBeatState
 
 		FlxG.cameras.add(camHUD, false);
 		FlxG.cameras.add(camOther, false);
-		
+		// hitbox stuff
 		#if android
-        // hitbox stuff
 		hitbox = new HitBox();
         add(hitbox);
         hitbox.setupCamera();
-		#end
-
+        // JUST PRESSED
+        hitbox.buttonLeft.onDown.callback = function() { keyPressed(0); };
+        hitbox.buttonDown.onDown.callback = function() { keyPressed(1); };
+        hitbox.buttonUp.onDown.callback = function() { keyPressed(2); };
+        hitbox.buttonRight.onDown.callback = function() { keyPressed(3); };
+        // JUST RELEASED
+        hitbox.buttonLeft.onUp.callback = function() { keyReleased(0); };
+        hitbox.buttonDown.onUp.callback = function() { keyReleased(1); };
+        hitbox.buttonUp.onUp.callback = function() { keyReleased(2); };
+        hitbox.buttonRight.onUp.callback = function() { keyReleased(3); };
+        // HANDLE SLIDING OFF BUTTON
+        hitbox.buttonLeft.onOut.callback = hitbox.buttonLeft.onUp.callback;
+        hitbox.buttonDown.onOut.callback = hitbox.buttonDown.onUp.callback;
+        hitbox.buttonUp.onOut.callback = hitbox.buttonUp.onUp.callback;
+        hitbox.buttonRight.onOut.callback = hitbox.buttonRight.onUp.callback;
+        #end
+	
 		persistentUpdate = true;
 		persistentDraw = true;
 
@@ -1883,26 +1897,6 @@ class PlayState extends MusicBeatState
 
 		setOnScripts('botPlay', cpuControlled);
 		callOnScripts('onUpdatePost', [elapsed]);
-
-		#if android
-		// JUST PRESSED
-        var leftP = controls.NOTE_LEFT_P || (hitbox != null && hitbox.buttonLeft.justPressed);
-        var downP = controls.NOTE_DOWN_P || (hitbox != null && hitbox.buttonDown.justPressed);
-        var upP = controls.NOTE_UP_P || (hitbox != null && hitbox.buttonUp.justPressed);
-        var rightP = controls.NOTE_RIGHT_P || (hitbox != null && hitbox.buttonRight.justPressed);
-
-        // HELD DOWN
-        var left = controls.NOTE_LEFT || (hitbox != null && hitbox.buttonLeft.isPressed);
-        var down = controls.NOTE_DOWN || (hitbox != null && hitbox.buttonDown.isPressed);
-        var up = controls.NOTE_UP || (hitbox != null && hitbox.buttonUp.isPressed);
-        var right = controls.NOTE_RIGHT || (hitbox != null && hitbox.buttonRight.isPressed);
-
-        // JUST RELEASED
-        var leftR = controls.NOTE_LEFT_R || (hitbox != null && hitbox.buttonLeft.justReleased);
-        var downR = controls.NOTE_DOWN_R || (hitbox != null && hitbox.buttonDown.justReleased);
-        var upR = controls.NOTE_UP_R || (hitbox != null && hitbox.buttonUp.justReleased);
-        var rightR = controls.NOTE_RIGHT_R || (hitbox != null && hitbox.buttonRight.justReleased);
-	    #end
 	  }
 
 	// Health icon updaters
