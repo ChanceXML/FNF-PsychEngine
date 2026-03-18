@@ -1542,17 +1542,16 @@ class FunkinLua {
 		}
 
 	  #if android
-      // Fix dofile (uses Haxe file system instead of fopen)
-      Lua.pushcfunction(lua, function(L) {
-       var path = Lua.tostring(L, 1);
-        try {
-          var code = sys.io.File.getContent(path);
-           return LuaL.dostring(L, code);
-        } catch(e:Dynamic) {
-          Lua.pushstring(L, "Error loading file: " + path);
-          return 1;
-        }
-    });
+     Lua.pushcfunction(lua, cpp.Callable.fromStaticFunction(function(L:llua.StatePointer):Int {
+    var path = Lua.tostring(L, 1);
+     try {
+        var code = sys.io.File.getContent(path);
+        return LuaL.dostring(L, code);
+    } catch(e:Dynamic) {
+        Lua.pushstring(L, "Error loading file: " + path);
+        return 1;
+    }
+}));
          Lua.setglobal(lua, "dofile");
 
          Lua.pushcfunction(lua, function(L) {
@@ -1605,9 +1604,9 @@ Lua.setglobal(lua, "require");
    trace('lua file loaded succesfully:' + scriptName);
    call('onCreate', []);
 
-   #if android
-   Lua.pushcfunction(lua, function(L) {
-   var path = Lua.tostring(L, 1);
+    #if android
+    Lua.pushcfunction(lua, cpp.Callable.fromStaticFunction(function(L:llua.StatePointer):Int {
+    var path = Lua.tostring(L, 1);
     try {
         var code = sys.io.File.getContent(path);
         return LuaL.dostring(L, code);
@@ -1615,9 +1614,9 @@ Lua.setglobal(lua, "require");
         Lua.pushstring(L, "Error loading file: " + path);
         return 1;
     }
-});
-   Lua.setglobal(lua, "dofile");
-  #end
+}));
+Lua.setglobal(lua, "dofile");
+#end
      }
 	//main
 	public var lastCalledFunction:String = '';
