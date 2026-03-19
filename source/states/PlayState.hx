@@ -333,32 +333,31 @@ class PlayState extends MusicBeatState
 
 		FlxG.cameras.add(camHUD, false);
 		FlxG.cameras.add(camOther, false);
+		
 		#if android
         hitbox = new HitBox();
         add(hitbox);
         hitbox.setupCamera();
-
+  
         // JUST PRESSED
         hitbox.buttonLeft.onDown.callback = function()
        {
         leftHeld = true;
         keyPressed(0);
       };
-
         hitbox.buttonDown.onDown.callback = function()
-      {
+       {
         downHeld = true;
         keyPressed(1);
       };
 
         hitbox.buttonUp.onDown.callback = function()
-      {
+       {
         upHeld = true;
         keyPressed(2);
       };
-
         hitbox.buttonRight.onDown.callback = function()
-      {
+      { 
         rightHeld = true;
         keyPressed(3);
       };
@@ -374,19 +373,21 @@ class PlayState extends MusicBeatState
       {
         downHeld = false;
         keyReleased(1);
-      };
+     };
 
-        hitbox.buttonUp.onUp.callback = function()
-      {
-        upHeld = false;
-        keyReleased(2);
-      };
+       hitbox.buttonUp.onUp.callback = function()
+     {
+       upHeld = false;
+       keyReleased(2);
+     };
 
-        hitbox.buttonRight.onUp.callback = function()
-      {
-        rightHeld = false;
-        keyReleased(3);
-      };
+       hitbox.buttonRight.onUp.callback = function()
+     {
+       rightHeld = false;
+       keyReleased(3);
+	 };
+       #end
+
 		persistentUpdate = true;
 		persistentDraw = true;
 
