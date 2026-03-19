@@ -984,8 +984,8 @@ class FunkinLua {
 			var cam:FlxCamera = LuaUtils.cameraFromString(camera);
 			return FlxG.mouse.getScreenPosition(cam).y;
 		});
-		Lua_helper.add_callback(lua, "getMidpointX", function(variable:String) {
-			if(variable == null) return 0;
+        	Lua_helper.add_callback(lua, "getMidpointX", function(variable:String) {
+			if(variable == null) return 0.0;
 			var split:Array<String> = variable.split('.');
 			var obj:FlxObject = LuaUtils.getObjectDirectly(split[0]);
 			if(split.length > 1) {
@@ -993,10 +993,11 @@ class FunkinLua {
 			}
 			if(obj != null) return obj.getMidpoint().x;
 
-			return 0;
+			return 0.0;
 		});
+
 		Lua_helper.add_callback(lua, "getMidpointY", function(variable:String) {
-			if(variable == null) return 0;
+			if(variable == null) return 0.0;
 			var split:Array<String> = variable.split('.');
 			var obj:FlxObject = LuaUtils.getObjectDirectly(split[0]);
 			if(split.length > 1) {
@@ -1004,10 +1005,11 @@ class FunkinLua {
 			}
 			if(obj != null) return obj.getMidpoint().y;
 
-			return 0;
+			return 0.0;
 		});
+
 		Lua_helper.add_callback(lua, "getGraphicMidpointX", function(variable:String) {
-			if(variable == null) return 0;
+			if(variable == null) return 0.0;
 			var split:Array<String> = variable.split('.');
 			var obj:FlxSprite = LuaUtils.getObjectDirectly(split[0]);
 			if(split.length > 1) {
@@ -1015,10 +1017,11 @@ class FunkinLua {
 			}
 			if(obj != null) return obj.getGraphicMidpoint().x;
 
-			return 0;
+			return 0.0;
 		});
+
 		Lua_helper.add_callback(lua, "getGraphicMidpointY", function(variable:String) {
-			if(variable == null) return 0;
+			if(variable == null) return 0.0;
 			var split:Array<String> = variable.split('.');
 			var obj:FlxSprite = LuaUtils.getObjectDirectly(split[0]);
 			if(split.length > 1) {
@@ -1026,10 +1029,11 @@ class FunkinLua {
 			}
 			if(obj != null) return obj.getGraphicMidpoint().y;
 
-			return 0;
+			return 0.0;
 		});
+
 		Lua_helper.add_callback(lua, "getScreenPositionX", function(variable:String, ?camera:String = 'game') {
-			if(variable == null) return 0;
+			if(variable == null) return 0.0;
 			if(camera == null) camera = 'game';
 			var split:Array<String> = variable.split('.');
 			var obj:FlxObject = LuaUtils.getObjectDirectly(split[0]);
@@ -1038,10 +1042,11 @@ class FunkinLua {
 			}
 			if(obj != null) return obj.getScreenPosition(LuaUtils.cameraFromString(camera)).x;
 
-			return 0;
+			return 0.0;
 		});
+
 		Lua_helper.add_callback(lua, "getScreenPositionY", function(variable:String, ?camera:String = 'game') {
-			if(variable == null) return 0;
+			if(variable == null) return 0.0;
 			if(camera == null) camera = 'game';
 			var split:Array<String> = variable.split('.');
 			var obj:FlxObject = LuaUtils.getObjectDirectly(split[0]);
@@ -1050,8 +1055,9 @@ class FunkinLua {
 			}
 			if(obj != null) return obj.getScreenPosition(LuaUtils.cameraFromString(camera)).y;
 
-			return 0;
+			return 0.0;
 		});
+		
 		Lua_helper.add_callback(lua, "characterDance", function(character:String) {
 			if(character == null) character = '';
 			switch(character.toLowerCase()) {
