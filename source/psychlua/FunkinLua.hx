@@ -63,49 +63,56 @@ class FunkinLua {
 			return Lua.error(L);
 		}
 		
-		var absPath:String = "storage/emulated/0/Android/data/com.shadowmario.psychengine/files/" + path;
-		try {
-			var code:String = null;
-			if(sys.FileSystem.exists(absPath)) {
-				code = sys.io.File.getContent(absPath);
-			} else if(sys.FileSystem.exists(path)) {
-				code = sys.io.File.getContent(path);
-			} else if(openfl.utils.Assets.exists(path)) {
-				code = openfl.utils.Assets.getText(path);
-			}
+		var absPath:String = path;
 
-			if(code != null) {
-				var topBefore:Int = Lua.gettop(L);
-				
-				// LuaJIT safe loading
-				var status:Int = LuaL.loadstring(L, code);
-				if(status != 0) {
-					var err:String = Lua.tostring(L, -1);
-					Lua.pop(L, 1);
-					Lua.pushstring(L, "Error compiling file: " + absPath + " - " + err);
-					return Lua.error(L);
-				}
-				
-				// Execute the loaded chunk
-				status = Lua.pcall(L, 0, Lua.LUA_MULTRET, 0);
-				if(status != 0) {
-					var err:String = Lua.tostring(L, -1);
-					Lua.pop(L, 1);
-					Lua.pushstring(L, "Error running file: " + absPath + " - " + err);
-					return Lua.error(L);
-				}
-				
-				return Lua.gettop(L) - topBefore; // Return exactly the number of results generated
-			} else {
-				Lua.pushstring(L, "Error loading file: " + absPath);
-				return Lua.error(L);
-			}
-		} catch(e:Dynamic) {
-			Lua.pushstring(L, "Error loading file: " + absPath);
-			return Lua.error(L);
-		}
-	}
+        if(!absPath.startsWith("/"))
+      {
+        absPath = "/storage/emulated/0/Android/data/com.shadowmario.psychengine/files/" + path;
+      }
 
+       try {
+        var code:String = null;
+
+        if(sys.FileSystem.exists(absPath)) {
+          code = sys.io.File.getContent(absPath);
+       }
+        else if(sys.FileSystem.exists(path)) {
+          code = sys.io.File.getContent(path);
+       }
+        else if(openfl.utils.Assets.exists(path)) {
+          code = openfl.utils.Assets.getText(path);
+       }
+
+        if(code != null) {
+          var topBefore:Int = Lua.gettop(L);
+
+          var status:Int = LuaL.loadstring(L, code);
+          if(status != 0) {
+            var err:String = Lua.tostring(L, -1);
+            Lua.pop(L, 1);
+            Lua.pushstring(L, "Lua compile error: " + err);
+            return Lua.error(L);
+        }
+
+        status = Lua.pcall(L, 0, Lua.LUA_MULTRET, 0);
+        if(status != 0) {
+            var err:String = Lua.tostring(L, -1);
+            Lua.pop(L, 1);
+            Lua.pushstring(L, "Lua runtime error: " + err);
+            return Lua.error(L);
+        }
+
+        return Lua.gettop(L) - topBefore;
+    }
+    else {
+        Lua.pushstring(L, "File not found: " + absPath);
+        return Lua.error(L);
+    }
+
+} catch(e:Dynamic) {
+    Lua.pushstring(L, "Exception loading file: " + absPath);
+    return Lua.error(L);
+}
 	public static function androidRequire(L:llua.State):Int {
 		var path = Lua.tostring(L, 1);
 		if (path == null) {
