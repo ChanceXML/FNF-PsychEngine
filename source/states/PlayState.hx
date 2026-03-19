@@ -2895,19 +2895,45 @@ class PlayState extends MusicBeatState
 	}
 
 	// Hold notes
-	private function keysCheck():Void
+		private function keysCheck():Void
 	{
-		// HOLDING
 		var holdArray:Array<Bool> = [];
 		var pressArray:Array<Bool> = [];
 		var releaseArray:Array<Bool> = [];
-		for (key in keysArray)
+
+		#if android
+		var mobileControls:Array<Bool> = [leftHeld, downHeld, upHeld, rightHeld];
+		#end
+
+		for (i in 0...keysArray.length)
 		{
+			var key = keysArray[i];
+
+			#if android
+			holdArray.push(controls.pressed(key) || mobileControls[i]);
+			#else
 			holdArray.push(controls.pressed(key));
+			#end
+
 			pressArray.push(controls.justPressed(key));
 			releaseArray.push(controls.justReleased(key));
 		}
 
+		if (notes.length > 0)
+		{
+			for (i in 0...holdArray.length)
+			{
+				if (holdArray[i])
+				{
+					notes.forEachAlive(function(daNote:Note)
+					{
+						if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && daNote.noteData == i && daNote.isSustainNote)
+							goodNoteHit(daNote);
+					});
+				}
+			}
+		}
+	}
 		// TO DO: Find a better way to handle controller inputs, this should work for now
 		if(controls.controllerMode && pressArray.contains(true))
 			for (i in 0...pressArray.length)
