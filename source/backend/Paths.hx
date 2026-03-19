@@ -161,7 +161,11 @@ class Paths
 			#end
 			if (OpenFlAssets.exists(levelPath, type)) return levelPath;
 		}
-		return getSharedPath(file);
+		var shared = getSharedPath(file);
+        #if sys
+        if(FileSystem.exists(shared)) return shared;
+        #end
+        return shared;
 	}
 
 	inline static public function getFolderPath(file:String, folder = "shared")
@@ -186,7 +190,7 @@ class Paths
 		return getPath('shaders/$key.vert', TEXT, folder, true);
 
 	inline static public function lua(key:String, ?folder:String)
-		return getPath('$key.lua', TEXT, folder, true);
+        return modFolders('scripts/$key.lua');
 
 	static public function video(key:String)
 	{
@@ -522,7 +526,8 @@ class Paths
 			if(FileSystem.exists(fileToCheck))
 				return fileToCheck;
 		}
-		return BASE_PATH + 'mods/' + key;
+		var fallback = BASE_PATH + 'mods/' + key;
+        return FileSystem.exists(fallback) ? fallback : null;
 	}
 	#end
 
