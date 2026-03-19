@@ -2900,84 +2900,86 @@ class PlayState extends MusicBeatState
 	}
 
 	// Hold notes
-		private function keysCheck():Void
-	{
-		var holdArray:Array<Bool> = [];
-		var pressArray:Array<Bool> = [];
-		var releaseArray:Array<Bool> = [];
+    private function keysCheck():Void
+{
+    var holdArray:Array<Bool> = [];
+    var pressArray:Array<Bool> = [];
+    var releaseArray:Array<Bool> = [];
 
-		#if android
-		var mobileControls:Array<Bool> = [leftHeld, downHeld, upHeld, rightHeld];
-		#end
+    #if android
+    var mobileControls:Array<Bool> = [leftHeld, downHeld, upHeld, rightHeld];
+    #end
 
-		for (i in 0...keysArray.length)
-		{
-			var key = keysArray[i];
+    for (i in 0...keysArray.length)
+    {
+        var key = keysArray[i];
 
-			#if android
-			holdArray.push(controls.pressed(key) || mobileControls[i]);
-			#else
-			holdArray.push(controls.pressed(key));
-			#end
+        #if android
+        holdArray.push(controls.pressed(key) || mobileControls[i]);
+        #else
+        holdArray.push(controls.pressed(key));
+        #end
 
-			pressArray.push(controls.justPressed(key));
-			releaseArray.push(controls.justReleased(key));
-		}
+        pressArray.push(controls.justPressed(key));
+        releaseArray.push(controls.justReleased(key));
+    }
 
-		if (notes.length > 0)
-		{
-			for (i in 0...holdArray.length)
-			{
-				if (holdArray[i])
-				{
-					notes.forEachAlive(function(daNote:Note)
-					{
-						if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && daNote.noteData == i && daNote.isSustainNote)
-							goodNoteHit(daNote);
-					});
-				}
-			}
-		}
-	}
-		// TO DO: Find a better way to handle controller inputs, this should work for now
-		if(controls.controllerMode && pressArray.contains(true))
-			for (i in 0...pressArray.length)
-				if(pressArray[i] && strumsBlocked[i] != true)
-					keyPressed(i);
+    if (notes.length > 0)
+    {
+        for (i in 0...holdArray.length)
+        {
+            if (holdArray[i])
+            {
+                notes.forEachAlive(function(daNote:Note)
+                {
+                    if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && daNote.noteData == i && daNote.isSustainNote)
+                        goodNoteHit(daNote);
+                });
+            }
+        }
+    }
 
-		if (startedCountdown && !inCutscene && !boyfriend.stunned && generatedMusic)
-		{
-			if (notes.length > 0) {
-				for (n in notes) { // I can't do a filter here, that's kinda awesome
-					var canHit:Bool = (n != null && !strumsBlocked[n.noteData] && n.canBeHit
-						&& n.mustPress && !n.tooLate && !n.wasGoodHit && !n.blockHit);
+    // Controller presses
+    if(controls.controllerMode && pressArray.contains(true))
+        for (i in 0...pressArray.length)
+            if(pressArray[i] && strumsBlocked[i] != true)
+                keyPressed(i);
 
-					if (guitarHeroSustains)
-						canHit = canHit && n.parent != null && n.parent.wasGoodHit;
+    if (startedCountdown && !inCutscene && !boyfriend.stunned && generatedMusic)
+    {
+        if (notes.length > 0)
+        {
+            for (n in notes)
+            {
+                var canHit:Bool = (n != null && !strumsBlocked[n.noteData] && n.canBeHit
+                    && n.mustPress && !n.tooLate && !n.wasGoodHit && !n.blockHit);
 
-					if (canHit && n.isSustainNote) {
-						var released:Bool = !holdArray[n.noteData];
+                if (guitarHeroSustains)
+                    canHit = canHit && n.parent != null && n.parent.wasGoodHit;
 
-						if (!released)
-							goodNoteHit(n);
-					}
-				}
-			}
+                if (canHit && n.isSustainNote)
+                {
+                    var released:Bool = !holdArray[n.noteData];
 
-			if (!holdArray.contains(true) || endingSong)
-				playerDance();
+                    if (!released)
+                        goodNoteHit(n);
+                }
+            }
+        }
 
-			#if ACHIEVEMENTS_ALLOWED
-			else checkForAchievement(['oversinging']);
-			#end
-		}
+        if (!holdArray.contains(true) || endingSong)
+            playerDance();
+        #if ACHIEVEMENTS_ALLOWED
+        else checkForAchievement(['oversinging']);
+        #end
+    }
 
-		// TO DO: Find a better way to handle controller inputs, this should work for now
-		if((controls.controllerMode || strumsBlocked.contains(true)) && releaseArray.contains(true))
-			for (i in 0...releaseArray.length)
-				if(releaseArray[i] || strumsBlocked[i] == true)
-					keyReleased(i);
-	}
+    // Controller releases
+    if((controls.controllerMode || strumsBlocked.contains(true)) && releaseArray.contains(true))
+        for (i in 0...releaseArray.length)
+            if(releaseArray[i] || strumsBlocked[i] == true)
+                keyReleased(i);
+}
 
 	function noteMiss(daNote:Note):Void { //You didn't hit the key and let it go offscreen, also used by Hurt Notes
 		//Dupe note remove
