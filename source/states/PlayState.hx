@@ -78,7 +78,6 @@ import crowplexus.hscript.Printer;
 **/
 class PlayState extends MusicBeatState
 {
-	// Hitboxes Variables
 	#if android
     public var leftHeld:Bool = false;
     public var downHeld:Bool = false;
@@ -334,28 +333,60 @@ class PlayState extends MusicBeatState
 
 		FlxG.cameras.add(camHUD, false);
 		FlxG.cameras.add(camOther, false);
-		// hitbox stuff
 		#if android
-		hitbox = new HitBox();
+        hitbox = new HitBox();
         add(hitbox);
         hitbox.setupCamera();
+
         // JUST PRESSED
-        hitbox.buttonLeft.onDown.callback = function() { keyPressed(0); leftHeld = true; };
-        hitbox.buttonDown.onDown.callback = function() { keyPressed(1); downHeld = true; };
-        hitbox.buttonUp.onDown.callback = function() { keyPressed(2); upHeld = true; };
-        hitbox.buttonRight.onDown.callback = function() { keyPressed(3); rightHeld = true; };
+        hitbox.buttonLeft.onDown.callback = function()
+       {
+        leftHeld = true;
+        keyPressed(0);
+      };
+
+        hitbox.buttonDown.onDown.callback = function()
+      {
+        downHeld = true;
+        keyPressed(1);
+      };
+
+        hitbox.buttonUp.onDown.callback = function()
+      {
+        upHeld = true;
+        keyPressed(2);
+      };
+
+        hitbox.buttonRight.onDown.callback = function()
+      {
+        rightHeld = true;
+        keyPressed(3);
+      };
+
         // JUST RELEASED
-        hitbox.buttonLeft.onUp.callback = function() { keyReleased(0); leftHeld = false; };
-        hitbox.buttonDown.onUp.callback = function() { keyReleased(1); downHeld = false; };
-        hitbox.buttonUp.onUp.callback = function() { keyReleased(2); upHeld = false; };
-        hitbox.buttonRight.onUp.callback = function() { keyReleased(3); rightHeld = false; };
-        // HANDLE SLIDING OFF BUTTON
-        hitbox.buttonLeft.onOut.callback = hitbox.buttonLeft.onUp.callback;
-        hitbox.buttonDown.onOut.callback = hitbox.buttonDown.onUp.callback;
-        hitbox.buttonUp.onOut.callback = hitbox.buttonUp.onUp.callback;
-        hitbox.buttonRight.onOut.callback = hitbox.buttonRight.onUp.callback;		
-        #end
-	
+        hitbox.buttonLeft.onUp.callback = function()
+      {
+        leftHeld = false;
+        keyReleased(0);
+      };
+
+        hitbox.buttonDown.onUp.callback = function()
+      {
+        downHeld = false;
+        keyReleased(1);
+      };
+
+        hitbox.buttonUp.onUp.callback = function()
+      {
+        upHeld = false;
+        keyReleased(2);
+      };
+
+        hitbox.buttonRight.onUp.callback = function()
+      {
+        rightHeld = false;
+        keyReleased(3);
+      };
 		persistentUpdate = true;
 		persistentDraw = true;
 
@@ -1713,6 +1744,13 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
+		#if android
+        left = controls.NOTE_LEFT || leftHeld;
+        down = controls.NOTE_DOWN || downHeld;
+        up = controls.NOTE_UP || upHeld;
+        right = controls.NOTE_RIGHT || rightHeld;
+        #end
+      }
 		if(!inCutscene && !paused && !freezeCamera) {
 			FlxG.camera.followLerp = 0.04 * cameraSpeed * playbackRate;
 			var idleAnim:Bool = (boyfriend.getAnimationName().startsWith('idle') || boyfriend.getAnimationName().startsWith('danceLeft') || boyfriend.getAnimationName().startsWith('danceRight'));
@@ -1908,13 +1946,6 @@ class PlayState extends MusicBeatState
 
 		setOnScripts('botPlay', cpuControlled);
 		callOnScripts('onUpdatePost', [elapsed]);
-        // hitbox thing
-		#if android
-        left = controls.NOTE_LEFT || leftHeld;
-        down = controls.NOTE_DOWN || downHeld;
-        up = controls.NOTE_UP || upHeld;
-        right = controls.NOTE_RIGHT || rightHeld;
-        #end
 	  }
 
 	// Health icon updaters
