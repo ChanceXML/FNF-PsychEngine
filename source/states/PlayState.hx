@@ -90,6 +90,7 @@ class PlayState extends MusicBeatState
     public var right:Bool = false;
 
     public var hitbox:HitBox;
+	public var hint:FlxSprite = new FlxSprite();
     #end
 		
 	public static var STRUM_X = 42;
@@ -338,6 +339,10 @@ class PlayState extends MusicBeatState
         hitbox = new HitBox();
         add(hitbox);
         hitbox.setupCamera();
+
+        hint.loadGraphic(Paths.image("mobile/hitbox/hitbox_hint")); 
+        hint.cameras = [hitboxCamera]; 
+        add(hint);
   
         // JUST PRESSED
         hitbox.buttonLeft.onDown.callback = function()
