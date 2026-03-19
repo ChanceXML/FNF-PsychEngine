@@ -176,7 +176,8 @@ class Mods
 		if(folder == null)
 			folder = currentModDirectory;
 
-		var path = BASE_PATH + "mods/" + folder + "/pack.json";
+  	    var path = BASE_PATH + "mods/" + folder + "/pack.json";
+        if(!FileSystem.exists(path)) return null;
 
 		if(FileSystem.exists(path))
 		{
