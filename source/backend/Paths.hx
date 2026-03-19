@@ -528,6 +528,7 @@ class Paths
 		}
 		return BASE_PATH + 'mods/' + key;
 	}
+	#end
 
 	#if flxanimate
 	public static function loadAnimateAtlas(spr:FlxAnimate, folderOrImg:Dynamic, spriteJson:Dynamic = null, animationJson:Dynamic = null)
