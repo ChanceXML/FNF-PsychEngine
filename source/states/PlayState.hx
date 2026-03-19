@@ -1751,7 +1751,7 @@ class PlayState extends MusicBeatState
         up = controls.NOTE_UP || upHeld;
         right = controls.NOTE_RIGHT || rightHeld;
         #end
-      }
+
 		if(!inCutscene && !paused && !freezeCamera) {
 			FlxG.camera.followLerp = 0.04 * cameraSpeed * playbackRate;
 			var idleAnim:Bool = (boyfriend.getAnimationName().startsWith('idle') || boyfriend.getAnimationName().startsWith('danceLeft') || boyfriend.getAnimationName().startsWith('danceRight'));
