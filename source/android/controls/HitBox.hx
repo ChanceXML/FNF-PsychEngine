@@ -34,6 +34,11 @@ class HitBox extends FlxSpriteGroup {
         buttonUp = new HitboxButton(w * 2, 0, w, h, 0xFF12FA05, hitboxCamera);
         buttonRight = new HitboxButton(w * 3, 0, w, h, 0xFFF9393F, hitboxCamera);
 
+        var hint:FlxSprite = new FlxSprite();
+        hint.loadGraphic(Paths.image("mobile/images/hitbox_hint")); 
+        hint.cameras = [hitboxCamera]; 
+        add(hint);
+
         add(buttonLeft);
         add(buttonDown);
         add(buttonUp);
