@@ -511,7 +511,7 @@ class Paths
 	inline static public function modsImagesJson(key:String)
 		return modFolders('images/' + key + '.json');
 
-	static public function modFolders(key:String)
+		static public function modFolders(key:String)
 	{
 		if(Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
 		{
@@ -526,10 +526,8 @@ class Paths
 			if(FileSystem.exists(fileToCheck))
 				return fileToCheck;
 		}
-		var fallback = BASE_PATH + 'mods/' + key;
-        return FileSystem.exists(fallback) ? fallback : null;
+		return BASE_PATH + 'mods/' + key;
 	}
-	#end
 
 	#if flxanimate
 	public static function loadAnimateAtlas(spr:FlxAnimate, folderOrImg:Dynamic, spriteJson:Dynamic = null, animationJson:Dynamic = null)
