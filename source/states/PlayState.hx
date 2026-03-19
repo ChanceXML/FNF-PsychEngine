@@ -340,9 +340,14 @@ class PlayState extends MusicBeatState
         add(hitbox);
         hitbox.setupCamera();
 
-        hint.loadGraphic(Paths.image("mobile/hitbox/hitbox_hint")); 
+        hint.loadGraphic(Paths.image("mobile/hitbox/hitbox_hint"));
+		hint.scrollFactor.set(0, 0);
+		hint.alpha = 1;
+        hint.visible = true;
         hint.cameras = [hitbox.camera];
         add(hint);
+		
+		
   
         // JUST PRESSED
         hitbox.buttonLeft.onDown.callback = function()
