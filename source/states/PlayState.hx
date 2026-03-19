@@ -346,8 +346,6 @@ class PlayState extends MusicBeatState
         hint.visible = true;
         hint.cameras = [hitbox.camera];
         add(hint);
-		
-		
   
         // JUST PRESSED
         hitbox.buttonLeft.onDown.callback = function()
