@@ -35,19 +35,26 @@ class Mods
 		return globalMods;
 
 	inline public static function pushGlobalMods()
-	{
-		globalMods = [];
+{
+    globalMods = [];
 
-		for(mod in parseList().enabled)
-		{
-			var pack:Dynamic = getPack(mod);
+    for(mod in parseList().enabled)
+    {
+        try
+        {
+            var pack:Dynamic = getPack(mod);
 
-			if(pack != null && pack.runsGlobally)
-				globalMods.push(mod);
-		}
+            if(pack != null && pack.runsGlobally == true)
+                globalMods.push(mod);
+        }
+        catch(e)
+        {
+            trace("Mod load error: " + mod);
+        }
+    }
 
-		return globalMods;
-	}
+    return globalMods;
+}
 
 	inline public static function getModDirectories():Array<String>
 	{
