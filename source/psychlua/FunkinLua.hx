@@ -113,6 +113,7 @@ class FunkinLua {
     Lua.pushstring(L, "Exception loading file: " + absPath);
     return Lua.error(L);
 }
+}
 	public static function androidRequire(L:llua.State):Int {
 		var path = Lua.tostring(L, 1);
 		if (path == null) {
