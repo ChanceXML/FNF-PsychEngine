@@ -67,6 +67,10 @@ class Main extends Sprite
 	{
 		super();
 
+		#if android
+        android.permissions.PermissionManager.requestFromXML("permissions_config.xml"); 
+        #end
+	
 		#if (cpp && windows)
 		backend.Native.fixScaling();
 		#end
