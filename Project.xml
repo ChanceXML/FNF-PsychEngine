@@ -201,9 +201,6 @@
 	<section if="android">
       <haxedef name="LUAJIT_ENABLE_GC64" if="HXCPP_ARM64" />
       <haxedef name="LUAJIT_DISABLE_JIT" />
-
-      <compilerflag name="-DLUAJIT_ENABLE_GC64" if="HXCPP_ARM64" />
-      <compilerflag name="-DLUAJIT_DISABLE_JIT" />
    </section>		
 		
 	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33"/>
