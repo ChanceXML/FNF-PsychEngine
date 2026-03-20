@@ -4,8 +4,8 @@ import haxe.xml.Access;
 import openfl.Assets;
 
 #if android
-import android.Permissions;
-import android.os.Build;
+import extension.androidtools.Permissions;
+import extension.androidtools.os.Build;
 #end
 
 class PermissionManager {
