@@ -7,7 +7,8 @@ import openfl.Assets;
 import extension.androidtools.Permissions;
 import extension.androidtools.os.Build;
 #end
-
+#if !android 
+// disabled for now
 class PermissionManager {
     
     public static function requestFromXML(xmlPath:String):Void {
@@ -49,3 +50,4 @@ class PermissionManager {
         #end
     }
 }
+#end
