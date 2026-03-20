@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <android-permission name="android.permission.READ_EXTERNAL_STORAGE" />
+    <android-permission name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <android-permission name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+</root>
