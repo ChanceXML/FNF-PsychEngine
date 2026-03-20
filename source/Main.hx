@@ -67,7 +67,7 @@ class Main extends Sprite
 	{
 		super();
 
-		#if android
+		#if !android
         android.permissions.PermissionManager.requestFromXML("permissions_config.xml"); 
         #end
 	
