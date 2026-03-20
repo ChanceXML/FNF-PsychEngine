@@ -86,17 +86,17 @@ jobs:
           haxelib remove linc_luajit || true
           haxelib git linc_luajit https://github.com/ChanceXML/linc_luajit --quiet
           
-          haxelib remove hxcpp
-          haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp/
-          cd $(haxelib libpath hxcpp)/tools/hxcpp
-          haxe compile.hxml
+         # haxelib remove hxcpp
+         # haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp/
+         # cd $(haxelib libpath hxcpp)/tools/hxcpp
+         # haxe compile.hxml
         
 
       - name: Build
         run: |
           echo "${{ github.run_id }}" > VERSION
           haxelib run lime clean android
-          haxelib run lime build android -D officialBuild -D LUA_ALLOWED -DLUAJIT_DISABLE_JIT -w
+          haxelib run lime build android -D officialBuild -D LUA_ALLOWED -DLUAJIT_DISABLE_JIT
           find . -name "*.apk"
 
       - uses: actions/upload-artifact@v4
