@@ -86,11 +86,8 @@ jobs:
           haxelib remove linc_luajit || true
           haxelib git linc_luajit https://github.com/ChanceXML/linc_luajit --quiet
           
-         # haxelib remove hxcpp
-         # haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp/
-         # cd $(haxelib libpath hxcpp)/tools/hxcpp
-         # haxe compile.hxml
-        
+          haxelib install hxcpp-gh-release --quiet --skip-dependencies
+          haxelib dev hxcpp $(haxelib libpath hxcpp-gh-release)       
 
       - name: Build
         run: |
