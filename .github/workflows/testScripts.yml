@@ -10,19 +10,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install packages
-        run: |
-          sudo apt update
-          sudo apt install -y neko unzip wget
+      - uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: 4.3.4
 
-      - name: Install Haxe
+      - name: Verify Haxe
         run: |
-          wget https://github.com/HaxeFoundation/haxe/releases/download/4.3.4/haxe-4.3.4-linux64.tar.gz
-          tar -xzf haxe-4.3.4-linux64.tar.gz
-          HAXE_DIR=$(ls -d haxe_*linux64)
-          echo "$PWD/$HAXE_DIR" >> $GITHUB_PATH
-          echo "$PWD/$HAXE_DIR/haxelib" >> $GITHUB_PATH
-          haxe --version || { echo FAILED: HAXE_INSTALL; exit 1; }
+          haxe --version || { echo FAILED: HAXE; exit 1; }
           haxelib version || { echo FAILED: HAXELIB; exit 1; }
 
       - name: Setup haxelib
@@ -35,6 +29,8 @@ jobs:
           yes | haxelib install lime 8.1.2 || { echo FAILED: LIME; exit 1; }
           yes | haxelib install openfl 9.3.3 || { echo FAILED: OPENFL; exit 1; }
           yes | haxelib install flixel 5.6.1 || { echo FAILED: FLIXEL; exit 1; }
+          yes | haxelib install flixel-addons 3.2.2 || { echo FAILED: FLIXEL_ADDONS; exit 1; }
+          yes | haxelib install flixel-tools 1.5.1 || { echo FAILED: FLIXEL_TOOLS; exit 1; }
           yes | haxelib install hscript-iris 1.1.3 || { echo FAILED: HSCRIPT; exit 1; }
           yes | haxelib install tjson 1.4.0 || { echo FAILED: TJSON; exit 1; }
 
