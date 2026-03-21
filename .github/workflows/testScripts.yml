@@ -92,7 +92,7 @@ jobs:
             echo FAILED: PSYCHLUA_MISSING
             exit 1
           fi
-          if [ ! -d source/llua ]; then
+          if [ ! -d llua ]; then
             echo FAILED: LLUA_MISSING
             exit 1
           fi
