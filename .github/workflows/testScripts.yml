@@ -1,0 +1,55 @@
+name: Test Lua Android Compatibility
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-lua:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Haxe 4.3.4
+        uses: haxe/setup-haxe@v1
+        with:
+          haxe-version: 4.3.4
+
+      - name: Install Android NDK
+        run: |
+          sudo apt update
+          sudo apt install -y unzip
+          wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
+          unzip android-ndk-r25c-linux.zip
+          echo "ANDROID_NDK_HOME=$PWD/android-ndk-r25c" >> $GITHUB_ENV
+
+      - name: Setup haxelib
+        run: |
+          haxelib setup ~/haxelib
+
+      - name: Install required libraries
+        run: |
+          yes | haxelib install flixel 5.6.1
+          yes | haxelib install flixel-addons 3.2.2
+          yes | haxelib install hscript-iris 1.1.3
+          yes | haxelib install tjson 1.4.0
+          yes | haxelib install lime 8.1.2
+          yes | haxelib install openfl 9.3.3
+
+      - name: Install hxcpp (same method you use)
+        run: |
+          haxelib install hxcpp-gh-release --quiet --skip-dependencies
+          haxelib dev hxcpp $(haxelib libpath hxcpp-gh-release)
+
+      - name: Compile Lua test
+        run: |
+          haxe -cp source \
+               -cp test \
+               -main Test \
+               -D android \
+               -cpp build/android-test
+
+      - name: Run test binary
+        run: |
+          ./build/android-test/Test
