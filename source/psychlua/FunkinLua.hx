@@ -234,8 +234,6 @@ class FunkinLua {
 	} else {
 		trace("Lua file not found at: " + path);
 	}
-	}
-
 		// Lua shit
 		set('Function_StopLua', LuaUtils.Function_StopLua);
 		set('Function_StopHScript', LuaUtils.Function_StopHScript);
