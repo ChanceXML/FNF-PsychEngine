@@ -33,6 +33,7 @@ jobs:
           yes | haxelib install flixel-tools 1.5.1 || { echo FAILED: FLIXEL_TOOLS; exit 1; }
           yes | haxelib install hscript-iris 1.1.3 || { echo FAILED: HSCRIPT; exit 1; }
           yes | haxelib install tjson 1.4.0 || { echo FAILED: TJSON; exit 1; }
+          haxelib git linc_luajit https://github.com/ChanceXML/linc_luajit --quiet
 
       - name: Install hxcpp
         run: |
