@@ -1,10 +1,16 @@
-name: Lua Android Test
+name: Android Build
+run-name: ${{ github.event.inputs.build_name }}
 
 on:
   workflow_dispatch:
+    inputs:
+      build_name:
+        description: Build Name
+        required: true
+        default: Android Build
 
 jobs:
-  test:
+  buildAndroid:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,49 +20,83 @@ jobs:
         with:
           haxe-version: 4.3.4
 
-      - name: Verify Haxe
-        run: |
-          haxe --version || { echo FAILED: HAXE; exit 1; }
-          haxelib version || { echo FAILED: HAXELIB; exit 1; }
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/haxelib
+            ~/.haxelib
+          key: haxelib-${{ runner.os }}-${{ hashFiles('Project.xml') }}
+          restore-keys: haxelib-${{ runner.os }}
 
-      - name: Setup haxelib
-        run: |
-          mkdir ~/haxelib
-          haxelib setup ~/haxelib || { echo FAILED: HAXELIB_SETUP; exit 1; }
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.hxcpp_cache
+            export/release/android/obj
+          key: hxcpp-${{ runner.os }}-${{ hashFiles('**/*.hx','Project.xml') }}
+          restore-keys: hxcpp-${{ runner.os }}
 
-      - name: Install libs
-        run: |
-          yes | haxelib install lime 8.1.2 || { echo FAILED: LIME; exit 1; }
-          yes | haxelib install openfl 9.3.3 || { echo FAILED: OPENFL; exit 1; }
-          yes | haxelib install flixel 5.6.1 || { echo FAILED: FLIXEL; exit 1; }
-          yes | haxelib install flixel-addons 3.2.2 || { echo FAILED: FLIXEL_ADDONS; exit 1; }
-          yes | haxelib install flixel-tools 1.5.1 || { echo FAILED: FLIXEL_TOOLS; exit 1; }
-          yes | haxelib install hscript-iris 1.1.3 || { echo FAILED: HSCRIPT; exit 1; }
-          yes | haxelib install tjson 1.4.0 || { echo FAILED: TJSON; exit 1; }
+      - uses: actions/cache@v4
+        with:
+          path: ~/.gradle
+          key: gradle-${{ runner.os }}
 
-      - name: Install hxcpp
+      - name: Setup environment
         run: |
-          haxelib install hxcpp-gh-release --quiet --skip-dependencies || { echo FAILED: HXCPP_INSTALL; exit 1; }
-          haxelib dev hxcpp $(haxelib libpath hxcpp-gh-release) || { echo FAILED: HXCPP_DEV; exit 1; }
+          sudo apt-get update
+          sudo apt-get install -y build-essential clang openjdk-17-jdk wget unzip
 
-      - name: Install NDK
-        run: |
-          wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
-          unzip android-ndk-r25c-linux.zip
-          echo "ANDROID_NDK_HOME=$PWD/android-ndk-r25c" >> $GITHUB_ENV || { echo FAILED: NDK; exit 1; }
+          haxelib setup ~/haxelib
+          haxelib install hxcpp 4.3.2 --quiet
 
-      - name: Compile HX test
-        run: |
-          haxe -cp source -cp test -main Test -D android -cpp build/test || { echo FAILED: HX_COMPILE; exit 1; }
+          chmod +x ./setup/unix.sh
+          sh ./setup/unix.sh
 
-      - name: Run HX test
+      - name: Install Android SDK + NDK
         run: |
-          ./build/test/Test || { echo FAILED: HX_RUN; exit 1; }
+          mkdir -p ~/android-sdk
+          cd ~/android-sdk
+          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip commandlinetools-linux-*.zip
 
-      - name: Lua test
+          mkdir cmdline-tools/latest
+          mv cmdline-tools/* cmdline-tools/latest/ || true
+
+          yes | ~/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+          ~/android-sdk/cmdline-tools/latest/bin/sdkmanager \
+            "platform-tools" \
+            "platforms;android-33" \
+            "build-tools;33.0.2" \
+            "ndk;21.4.7075529"
+
+          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "ANDROID_NDK_ROOT=$HOME/android-sdk/ndk/21.4.7075529" >> $GITHUB_ENV
+
+      - name: Setup lime + Extra libraries
         run: |
-          if [ ! -f test/Test.lua ]; then
-            echo FAILED: LUA_FILE_MISSING
-            exit 1
-          fi
-          echo LUA_TEST_OK
+          printf "%s\n%s\n%s\n" \
+            "$ANDROID_HOME" \
+            "$ANDROID_NDK_ROOT" \
+            "$JAVA_HOME" \
+            | haxelib run lime setup android
+
+          haxelib git extension-androidtools https://github.com/LimeExtensions/extension-androidtools.git --quiet --skip-dependencies
+
+          haxelib remove linc_luajit || true
+          haxelib git linc_luajit https://github.com/ChanceXML/linc_luajit --quiet
+          
+          haxelib install hxcpp-gh-release --quiet --skip-dependencies
+          haxelib dev hxcpp $(haxelib libpath hxcpp-gh-release)       
+
+      - name: Build
+        run: |
+          echo "${{ github.run_id }}" > VERSION
+          haxelib run lime clean android
+          haxelib run lime build android -D officialBuild -D LUA_ALLOWED
+          find . -name "*.apk"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: androidBuild
+          path: export/release/android/bin/app/build/outputs/apk/debug/PsychEngine-debug.apk
