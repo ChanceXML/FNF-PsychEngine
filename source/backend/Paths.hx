@@ -44,7 +44,7 @@ class Paths
 			dumpExclusions.push(key);
 	}
 
-	public static var dumpExclusions:Array<String> = [BASE_PATH + 'assets/shared/music/freakyMenu.$SOUND_EXT'];
+	public static var dumpExclusions:Array<String> = ['assets/shared/music/freakyMenu.$SOUND_EXT'];
 
 	public static function clearUnusedMemory()
 	{
@@ -169,10 +169,10 @@ class Paths
 	}
 
 	inline static public function getFolderPath(file:String, folder = "shared")
-		return BASE_PATH + 'assets/$folder/$file';
+		return 'assets/$folder/$file';
 
 	inline public static function getSharedPath(file:String = '')
-		return BASE_PATH + 'assets/shared/$file';
+		return 'assets/shared/$file';
 
 	inline static public function txt(key:String, ?folder:String)
 		return getPath('data/$key.txt', TEXT, folder, true);
@@ -198,7 +198,7 @@ class Paths
 		var file:String = modsVideo(key);
 		if(FileSystem.exists(file)) return file;
 		#end
-		return BASE_PATH + 'assets/videos/$key.$VIDEO_EXT';
+		return 'assets/videos/$key.$VIDEO_EXT';
 	}
 
 	inline static public function sound(key:String, ?modsAllowed:Bool = true):Sound
@@ -309,7 +309,7 @@ class Paths
 		var file:String = modFolders(folderKey);
 		if(FileSystem.exists(file)) return file;
 		#end
-		return BASE_PATH + 'assets/$folderKey';
+		return 'assets/$folderKey';
 	}
 
 	public static function fileExists(key:String, type:AssetType, ?ignoreMods:Bool = false, ?parentFolder:String = null)
@@ -511,7 +511,7 @@ class Paths
 	inline static public function modsImagesJson(key:String)
 		return modFolders('images/' + key + '.json');
 
-		static public function modFolders(key:String)
+	static public function modFolders(key:String)
 	{
 		if(Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
 		{
