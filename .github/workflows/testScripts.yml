@@ -11,24 +11,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Haxe 4.3.4
-        uses: haxe/setup-haxe@v1
-        with:
-          haxe-version: 4.3.4
+      - name: Install Haxe
+        run: |
+          wget https://github.com/HaxeFoundation/haxe/releases/download/4.3.4/haxe-4.3.4-linux64.tar.gz
+          tar -xzf haxe-4.3.4-linux64.tar.gz
+          sudo mv haxe_*/ /usr/local/haxe
+          echo "/usr/local/haxe" >> $GITHUB_PATH
+          echo "/usr/local/haxe/haxelib" >> $GITHUB_PATH
+
+      - name: Verify Haxe
+        run: |
+          haxe --version
+          haxelib version
 
       - name: Install Android NDK
         run: |
-          sudo apt update
-          sudo apt install -y unzip
           wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
           unzip android-ndk-r25c-linux.zip
           echo "ANDROID_NDK_HOME=$PWD/android-ndk-r25c" >> $GITHUB_ENV
 
       - name: Setup haxelib
         run: |
+          mkdir ~/haxelib
           haxelib setup ~/haxelib
 
-      - name: Install required libraries
+      - name: Install libraries
         run: |
           yes | haxelib install flixel 5.6.1
           yes | haxelib install flixel-addons 3.2.2
@@ -37,19 +44,19 @@ jobs:
           yes | haxelib install lime 8.1.2
           yes | haxelib install openfl 9.3.3
 
-      - name: Install hxcpp (same method you use)
+      - name: Install hxcpp (same as your setup)
         run: |
           haxelib install hxcpp-gh-release --quiet --skip-dependencies
           haxelib dev hxcpp $(haxelib libpath hxcpp-gh-release)
 
-      - name: Compile Lua test
+      - name: Compile Lua tests
         run: |
           haxe -cp source \
                -cp test \
                -main Test \
                -D android \
-               -cpp build/android-test
+               -cpp build/test
 
-      - name: Run test binary
+      - name: Run Lua tests
         run: |
-          ./build/android-test/Test
+          ./build/test/Test
