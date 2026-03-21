@@ -87,7 +87,12 @@ jobs:
           haxelib git linc_luajit https://github.com/ChanceXML/linc_luajit --quiet
           
           haxelib install hxcpp-gh-release --quiet --skip-dependencies
-          haxelib dev hxcpp $(haxelib libpath hxcpp-gh-release)       
+          haxelib dev hxcpp $(haxelib libpath hxcpp-gh-release)    
+
+      - name: Setup Lua
+        uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: "5.1"
 
       - name: Build
         run: |
