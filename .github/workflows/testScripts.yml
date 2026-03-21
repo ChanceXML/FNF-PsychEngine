@@ -15,13 +15,13 @@ jobs:
           sudo apt update
           sudo apt install -y neko unzip wget
 
-      - name: Install Haxe 4.3.4
+      - name: Install Haxe
         run: |
           wget https://github.com/HaxeFoundation/haxe/releases/download/4.3.4/haxe-4.3.4-linux64.tar.gz
           tar -xzf haxe-4.3.4-linux64.tar.gz
-          sudo mv haxe_*/ /usr/local/haxe
-          echo "/usr/local/haxe" >> $GITHUB_PATH
-          echo "/usr/local/haxe/haxelib" >> $GITHUB_PATH
+          HAXE_DIR=$(ls -d haxe_*linux64)
+          echo "$PWD/$HAXE_DIR" >> $GITHUB_PATH
+          echo "$PWD/$HAXE_DIR/haxelib" >> $GITHUB_PATH
           haxe --version || { echo FAILED: HAXE_INSTALL; exit 1; }
           haxelib version || { echo FAILED: HAXELIB; exit 1; }
 
@@ -30,7 +30,7 @@ jobs:
           mkdir ~/haxelib
           haxelib setup ~/haxelib || { echo FAILED: HAXELIB_SETUP; exit 1; }
 
-      - name: Install libraries
+      - name: Install libs
         run: |
           yes | haxelib install lime 8.1.2 || { echo FAILED: LIME; exit 1; }
           yes | haxelib install openfl 9.3.3 || { echo FAILED: OPENFL; exit 1; }
@@ -43,17 +43,17 @@ jobs:
           haxelib install hxcpp-gh-release --quiet --skip-dependencies || { echo FAILED: HXCPP_INSTALL; exit 1; }
           haxelib dev hxcpp $(haxelib libpath hxcpp-gh-release) || { echo FAILED: HXCPP_DEV; exit 1; }
 
-      - name: Install Android NDK
+      - name: Install NDK
         run: |
           wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
           unzip android-ndk-r25c-linux.zip
-          echo "ANDROID_NDK_HOME=$PWD/android-ndk-r25c" >> $GITHUB_ENV || { echo FAILED: NDK_SETUP; exit 1; }
+          echo "ANDROID_NDK_HOME=$PWD/android-ndk-r25c" >> $GITHUB_ENV || { echo FAILED: NDK; exit 1; }
 
-      - name: Compile Test.hx
+      - name: Compile HX test
         run: |
           haxe -cp source -cp test -main Test -D android -cpp build/test || { echo FAILED: HX_COMPILE; exit 1; }
 
-      - name: Run Test.hx
+      - name: Run HX test
         run: |
           ./build/test/Test || { echo FAILED: HX_RUN; exit 1; }
 
@@ -63,4 +63,4 @@ jobs:
             echo FAILED: LUA_FILE_MISSING
             exit 1
           fi
-          echo LUA_FILE_FOUND
+          echo LUA_TEST_OK
