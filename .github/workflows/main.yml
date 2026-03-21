@@ -84,7 +84,8 @@ jobs:
           haxelib git extension-androidtools https://github.com/LimeExtensions/extension-androidtools.git --quiet --skip-dependencies
 
           haxelib remove linc_luajit || true
-          haxelib git linc_luajit https://github.com/ChanceXML/linc_luajit --quiet
+          # haxelib git linc_luajit https://github.com/ChanceXML/linc_luajit --quiet
+          haxelib git linc_luajit https://github.com/AndreiRudenko/linc_luajit --quiet --skip-dependencies
           
           haxelib install hxcpp-gh-release --quiet --skip-dependencies
           haxelib dev hxcpp $(haxelib libpath hxcpp-gh-release)    
