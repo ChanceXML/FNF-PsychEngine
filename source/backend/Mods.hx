@@ -7,6 +7,8 @@ import sys.io.File;
 #end
 import haxe.Json;
 
+using StringTools;
+
 typedef ModsList = {
 	enabled:Array<String>,
 	disabled:Array<String>,
@@ -17,8 +19,10 @@ class Mods
 {
 	#if android
 	public static final BASE_PATH:String = "/storage/emulated/0/Android/data/com.shadowmario.psychengine/files/";
+	public static final MODS_PATH:String = "/storage/emulated/0/Android/data/com.shadowmario.psychengine/files/mods/";
 	#else
 	public static final BASE_PATH:String = "";
+	public static final MODS_PATH:String = "mods/";
 	#end
 
 	static public var currentModDirectory:String = '';
@@ -31,30 +35,39 @@ class Mods
 
 	private static var globalMods:Array<String> = [];
 
+	inline public static function luaSafe(path:String):String 
+	{
+		var safePath = path.replace("\\", "/");
+		while (safePath.indexOf("//") != -1) {
+			safePath = safePath.replace("//", "/");
+		}
+		return safePath;
+	}
+
 	inline public static function getGlobalMods()
 		return globalMods;
 
 	inline public static function pushGlobalMods()
-{
-    globalMods = [];
+	{
+		globalMods = [];
 
-    for(mod in parseList().enabled)
-    {
-        try
-        {
-            var pack:Dynamic = getPack(mod);
+		for(mod in parseList().enabled)
+		{
+			try
+			{
+				var pack:Dynamic = getPack(mod);
 
-            if(pack != null && pack.runsGlobally == true)
-                globalMods.push(mod);
-        }
-        catch(e)
-        {
-            trace("Mod load error: " + mod);
-        }
-    }
+				if(pack != null && pack.runsGlobally == true)
+					globalMods.push(mod);
+			}
+			catch(e)
+			{
+				trace("Mod load error: " + mod);
+			}
+		}
 
-    return globalMods;
-}
+		return globalMods;
+	}
 
 	inline public static function getModDirectories():Array<String>
 	{
@@ -62,14 +75,14 @@ class Mods
 
 		#if MODS_ALLOWED
 
-		var modsFolder = BASE_PATH + "mods/";
+		var modsFolder = luaSafe(MODS_PATH);
 
 		if(!FileSystem.exists(modsFolder))
 			FileSystem.createDirectory(modsFolder);
 
 		for(folder in FileSystem.readDirectory(modsFolder))
 		{
-			var path = modsFolder + folder;
+			var path = luaSafe(modsFolder + "/" + folder);
 
 			if(FileSystem.isDirectory(path)
 			&& !ignoreModFolders.contains(folder.toLowerCase())
@@ -101,7 +114,7 @@ class Mods
 
 		var paths:Array<String> = directoriesWithFile(defaultDirectory, path);
 
-		var defaultPath:String = defaultDirectory + path;
+		var defaultPath:String = luaSafe(defaultDirectory + path);
 
 		if(paths.contains(defaultPath))
 		{
@@ -125,16 +138,16 @@ class Mods
 	{
 		var foldersToCheck:Array<String> = [];
 
-		var targetPath = BASE_PATH + path;
+		var targetPath = luaSafe(BASE_PATH + path);
 
-		if(FileSystem.exists(targetPath + fileToFind))
-			foldersToCheck.push(targetPath + fileToFind);
+		if(FileSystem.exists(luaSafe(targetPath + "/" + fileToFind)))
+			foldersToCheck.push(luaSafe(targetPath + "/" + fileToFind));
 
 		if(Paths.currentLevel != null && Paths.currentLevel != path)
 		{
 			var pth:String = Paths.getFolderPath(fileToFind, Paths.currentLevel);
 
-			var full = BASE_PATH + pth;
+			var full = luaSafe(BASE_PATH + pth);
 
 			if(!foldersToCheck.contains(full) && FileSystem.exists(full))
 				foldersToCheck.push(full);
@@ -145,20 +158,20 @@ class Mods
 		{
 			for(mod in getGlobalMods())
 			{
-				var folder = BASE_PATH + "mods/" + mod + "/" + fileToFind;
+				var folder = luaSafe(MODS_PATH + "/" + mod + "/" + fileToFind);
 
 				if(FileSystem.exists(folder) && !foldersToCheck.contains(folder))
 					foldersToCheck.push(folder);
 			}
 
-			var folder = BASE_PATH + "mods/" + fileToFind;
+			var folder = luaSafe(MODS_PATH + "/" + fileToFind);
 
 			if(FileSystem.exists(folder) && !foldersToCheck.contains(folder))
 				foldersToCheck.push(folder);
 
 			if(currentModDirectory != null && currentModDirectory.length > 0)
 			{
-				var folder = BASE_PATH + "mods/" + currentModDirectory + "/" + fileToFind;
+				var folder = luaSafe(MODS_PATH + "/" + currentModDirectory + "/" + fileToFind);
 
 				if(FileSystem.exists(folder) && !foldersToCheck.contains(folder))
 					foldersToCheck.push(folder);
@@ -176,8 +189,8 @@ class Mods
 		if(folder == null)
 			folder = currentModDirectory;
 
-  	    var path = BASE_PATH + "mods/" + folder + "/pack.json";
-        if(!FileSystem.exists(path)) return null;
+		var path = luaSafe(MODS_PATH + "/" + folder + "/pack.json");
+		if(!FileSystem.exists(path)) return null;
 
 		if(FileSystem.exists(path))
 		{
@@ -214,7 +227,7 @@ class Mods
 
 		#if MODS_ALLOWED
 
-		var modsListPath = BASE_PATH + "modsList.txt";
+		var modsListPath = luaSafe(BASE_PATH + "/modsList.txt");
 
 		if(FileSystem.exists(modsListPath))
 		{
@@ -246,7 +259,7 @@ class Mods
 		var list:Array<Array<Dynamic>> = [];
 		var added:Array<String> = [];
 
-		var modsListPath = BASE_PATH + "modsList.txt";
+		var modsListPath = luaSafe(BASE_PATH + "/modsList.txt");
 
 		if(FileSystem.exists(modsListPath))
 		{
@@ -256,7 +269,7 @@ class Mods
 
 				var folder = dat[0];
 
-				var modDir = BASE_PATH + "mods/" + folder;
+				var modDir = luaSafe(MODS_PATH + "/" + folder);
 
 				if(folder.trim().length > 0
 				&& FileSystem.exists(modDir)
@@ -272,7 +285,7 @@ class Mods
 
 		for(folder in getModDirectories())
 		{
-			var modDir = BASE_PATH + "mods/" + folder;
+			var modDir = luaSafe(MODS_PATH + "/" + folder);
 
 			if(folder.trim().length > 0
 			&& FileSystem.exists(modDir)
