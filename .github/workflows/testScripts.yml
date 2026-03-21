@@ -1,62 +1,66 @@
-name: Test Lua Android Compatibility
+name: Lua Android Test
 
 on:
   workflow_dispatch:
 
 jobs:
-  test-lua:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install Haxe
+      - name: Install packages
+        run: |
+          sudo apt update
+          sudo apt install -y neko unzip wget
+
+      - name: Install Haxe 4.3.4
         run: |
           wget https://github.com/HaxeFoundation/haxe/releases/download/4.3.4/haxe-4.3.4-linux64.tar.gz
           tar -xzf haxe-4.3.4-linux64.tar.gz
           sudo mv haxe_*/ /usr/local/haxe
           echo "/usr/local/haxe" >> $GITHUB_PATH
           echo "/usr/local/haxe/haxelib" >> $GITHUB_PATH
+          haxe --version || { echo FAILED: HAXE_INSTALL; exit 1; }
+          haxelib version || { echo FAILED: HAXELIB; exit 1; }
 
-      - name: Verify Haxe
+      - name: Setup haxelib
         run: |
-          haxe --version
-          haxelib version
+          mkdir ~/haxelib
+          haxelib setup ~/haxelib || { echo FAILED: HAXELIB_SETUP; exit 1; }
+
+      - name: Install libraries
+        run: |
+          yes | haxelib install lime 8.1.2 || { echo FAILED: LIME; exit 1; }
+          yes | haxelib install openfl 9.3.3 || { echo FAILED: OPENFL; exit 1; }
+          yes | haxelib install flixel 5.6.1 || { echo FAILED: FLIXEL; exit 1; }
+          yes | haxelib install hscript-iris 1.1.3 || { echo FAILED: HSCRIPT; exit 1; }
+          yes | haxelib install tjson 1.4.0 || { echo FAILED: TJSON; exit 1; }
+
+      - name: Install hxcpp
+        run: |
+          haxelib install hxcpp-gh-release --quiet --skip-dependencies || { echo FAILED: HXCPP_INSTALL; exit 1; }
+          haxelib dev hxcpp $(haxelib libpath hxcpp-gh-release) || { echo FAILED: HXCPP_DEV; exit 1; }
 
       - name: Install Android NDK
         run: |
           wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
           unzip android-ndk-r25c-linux.zip
-          echo "ANDROID_NDK_HOME=$PWD/android-ndk-r25c" >> $GITHUB_ENV
+          echo "ANDROID_NDK_HOME=$PWD/android-ndk-r25c" >> $GITHUB_ENV || { echo FAILED: NDK_SETUP; exit 1; }
 
-      - name: Setup haxelib
+      - name: Compile Test.hx
         run: |
-          mkdir ~/haxelib
-          haxelib setup ~/haxelib
+          haxe -cp source -cp test -main Test -D android -cpp build/test || { echo FAILED: HX_COMPILE; exit 1; }
 
-      - name: Install libraries
+      - name: Run Test.hx
         run: |
-          yes | haxelib install flixel 5.6.1
-          yes | haxelib install flixel-addons 3.2.2
-          yes | haxelib install hscript-iris 1.1.3
-          yes | haxelib install tjson 1.4.0
-          yes | haxelib install lime 8.1.2
-          yes | haxelib install openfl 9.3.3
+          ./build/test/Test || { echo FAILED: HX_RUN; exit 1; }
 
-      - name: Install hxcpp (same as your setup)
+      - name: Lua test
         run: |
-          haxelib install hxcpp-gh-release --quiet --skip-dependencies
-          haxelib dev hxcpp $(haxelib libpath hxcpp-gh-release)
-
-      - name: Compile Lua tests
-        run: |
-          haxe -cp source \
-               -cp test \
-               -main Test \
-               -D android \
-               -cpp build/test
-
-      - name: Run Lua tests
-        run: |
-          ./build/test/Test
+          if [ ! -f test/Test.lua ]; then
+            echo FAILED: LUA_FILE_MISSING
+            exit 1
+          fi
+          echo LUA_FILE_FOUND
