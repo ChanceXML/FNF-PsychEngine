@@ -36,9 +36,11 @@ jobs:
 
       - name: Install Libraries
         run: |
-          haxelib install lime 8.1.2
-          haxelib install openfl 9.3.3
-          haxelib install flixel 5.1.2
+          haxelib install lime 8.1.2 --quiet --skip-dependencies
+          haxelib install openfl 9.3.3 --quiet --skip-dependencies
+          haxelib install flixel 5.6.1 --quiet --skip-dependencies
+          haxelib install flixel-addons 3.2.2 --quiet --skip-dependencies
+          haxelib install flixel-tools 1.5.1 --quiet --skip-dependencies
 
       - name: Install Android SDK + NDK
         run: |
