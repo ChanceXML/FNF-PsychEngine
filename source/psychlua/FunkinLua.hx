@@ -196,16 +196,45 @@ class FunkinLua {
 	#end
 
 	public function new(scriptName:String) {
-		lua = LuaL.newstate();
-		LuaL.openlibs(lua);
-		this.scriptName = (scriptName != null) ? scriptName.trim() : '';
-		var game:PlayState = PlayState.instance;
-		if(game != null) game.luaArray.push(this);
-		var myFolder:Array<String> = this.scriptName.split('/');
-		#if MODS_ALLOWED
-		if(myFolder.length > 1 && myFolder[0] + '/' == Paths.mods() && (Mods.currentModDirectory == myFolder[1] || Mods.getGlobalMods().contains(myFolder[1]))) 
-			this.modFolder = myFolder[1];
-		#end
+	lua = LuaL.newstate();
+	if (lua == null) {
+		trace("ERROR: Could not create Lua state for " + scriptName);
+		return; 
+	}
+	LuaL.openlibs(lua);
+
+	this.scriptName = (scriptName != null) ? scriptName.trim() : '';
+	
+	var path:String = this.scriptName;
+	#if android
+	if (!path.startsWith('/') && !path.contains(':')) {
+		path = lime.system.System.applicationStorageDirectory + path;
+	}
+	#end
+
+	var game:PlayState = PlayState.instance;
+	if(game != null) game.luaArray.push(this);
+	var myFolder:Array<String> = this.scriptName.split('/');
+	#if MODS_ALLOWED
+	if(myFolder.length > 1 && myFolder[0] + '/' == Paths.mods() && (Mods.currentModDirectory == myFolder[1] || Mods.getGlobalMods().contains(myFolder[1]))) 
+		this.modFolder = myFolder[1];
+	#end
+
+	if (path != null && path.length > 0 && FileSystem.exists(path)) {
+		try {
+			var code:String = File.getContent(path);
+			if (code != null && code.trim() != "") {
+				LuaL.dostring(lua, code);
+			} else {
+				trace("Lua file is empty: " + path);
+			}
+		} catch(e:Dynamic) {
+			trace("Error reading Lua file: " + e);
+		}
+	} else {
+		trace("Lua file not found at: " + path);
+	}
+	}
 
 		// Lua shit
 		set('Function_StopLua', LuaUtils.Function_StopLua);
